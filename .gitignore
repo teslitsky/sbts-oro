@@ -35,3 +35,16 @@
 
 # Composer PHAR
 /composer.phar
+
+# Platform specific .gitignore
+/node_modules
+/build/logs/*
+/cov
+/web/css
+/web/js
+/web/uploads/users/*
+/web/media/cache
+/web/build.js
+/app/config/parameters_test.yml
+*~
+/app/SymfonyRequirements.php
