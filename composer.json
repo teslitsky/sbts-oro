@@ -1,0 +1,48 @@
+{
+    "name": "teslitsky/sbts-oro",
+    "description": "Simple Bug Tracking System based on the Oro Platform",
+    "homepage": "https://github.com/teslitsky/sbts-oro.git",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packagist.orocrm.com"
+        }
+    ],
+    "require": {
+        "oro/platform": "1.x-dev"
+    },
+    "config": {
+        "component-dir": "web/bundles/components"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Oro\\Bundle\\InstallerBundle\\Composer\\ScriptHandler::setPermissions",
+            "Oro\\Bundle\\InstallerBundle\\Composer\\ScriptHandler::installAssets"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Oro\\Bundle\\InstallerBundle\\Composer\\ScriptHandler::setPermissions",
+            "Oro\\Bundle\\InstallerBundle\\Composer\\ScriptHandler::installAssets"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        }
+    }
+}
