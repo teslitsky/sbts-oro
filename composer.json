@@ -36,7 +36,7 @@
             "Oro\\Bundle\\InstallerBundle\\Composer\\ScriptHandler::installAssets"
         ]
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
         "symfony-app-dir": "app",
