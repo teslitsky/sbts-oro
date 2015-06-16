@@ -1,3 +1,3 @@
-sbts_issue_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: SbtsIssueBundle:Default:index }
+sbts_issue:
+    resource: "@SbtsIssueBundle/Controller"
+    type:      annotation
