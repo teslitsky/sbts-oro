@@ -5,13 +5,17 @@ namespace Sbts\Bundle\IssueBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\UserBundle\Entity\User;
+
+use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
 
 /**
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
+ * @Config
  */
-class Issue
+class Issue extends ExtendIssue
 {
     /**
      * @var integer
@@ -107,6 +111,8 @@ class Issue
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->children = new ArrayCollection();
     }
 
