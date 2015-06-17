@@ -13,6 +13,7 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
 /**
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
+ * @ORM\HasLifecycleCallbacks
  * @Config
  */
 class Issue extends ExtendIssue
@@ -408,5 +409,22 @@ class Issue extends ExtendIssue
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdateAction()
+    {
+        $this->setUpdated(new \DateTime());
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersistAction()
+    {
+        $this->setCreated(new \DateTime());
+        $this->setUpdated(new \DateTime());
     }
 }
