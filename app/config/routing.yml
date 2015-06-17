@@ -27,3 +27,7 @@ oro_auto_routing:
 oro_expose:
     resource: .
     type:     oro_expose
+
+sbts:
+    resource: "@SbtsIssueBundle/Resources/config/routing.yml"
+    prefix: /sbts
