@@ -8,6 +8,11 @@ namespace Sbts\Bundle\IssueBundle\Entity;
  */
 class IssueType
 {
+    const TYPE_BUG = 'bug';
+    const TYPE_SUB_TASK = 'sub_task';
+    const TYPE_TASK = 'task';
+    const TYPE_STORY = 'story';
+
     /**
      * @var integer
      *

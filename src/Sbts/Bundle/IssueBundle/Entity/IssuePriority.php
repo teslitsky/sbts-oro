@@ -8,6 +8,12 @@ namespace Sbts\Bundle\IssueBundle\Entity;
  */
 class IssuePriority
 {
+    const PRIORITY_BLOCKER = 'blocker';
+    const PRIORITY_CRITICAL = 'critical';
+    const PRIORITY_MAJOR = 'major';
+    const PRIORITY_MINOR = 'minor';
+    const PRIORITY_TRIVIAL = 'trivial';
+
     /**
      * @var integer
      *

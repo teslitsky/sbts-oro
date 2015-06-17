@@ -8,6 +8,9 @@ namespace Sbts\Bundle\IssueBundle\Entity;
  */
 class IssueResolution
 {
+    const RESOLUTION_UNRESOLVED = 'unresolved';
+    const RESOLUTION_FIXED = 'fixed';
+
     /**
      * @var integer
      *
