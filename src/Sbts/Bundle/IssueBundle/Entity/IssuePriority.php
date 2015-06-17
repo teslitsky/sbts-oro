@@ -2,6 +2,8 @@
 
 namespace Sbts\Bundle\IssueBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @ORM\Table(name="sbts_issue_priority")
  * @ORM\Entity
@@ -21,7 +23,7 @@ class IssuePriority
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -29,6 +31,13 @@ class IssuePriority
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     protected $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    protected $label;
 
 
     /**
@@ -63,6 +72,30 @@ class IssuePriority
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Sets user-visible label
+     *
+     * @param string $label
+     *
+     * @return self
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Gets user-visible label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 
     /**

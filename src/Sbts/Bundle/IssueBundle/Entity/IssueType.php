@@ -2,6 +2,8 @@
 
 namespace Sbts\Bundle\IssueBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @ORM\Table(name="sbts_issue_type")
  * @ORM\Entity
@@ -20,14 +22,21 @@ class IssueType
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
+    protected $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    protected $label;
 
     /**
      * Gets id
@@ -61,6 +70,30 @@ class IssueType
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Sets user-visible label
+     *
+     * @param string $label
+     *
+     * @return self
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Gets user-visible label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 
     /**
