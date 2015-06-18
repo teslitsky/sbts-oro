@@ -1,0 +1,4 @@
+sbts_issue_bundle:
+    resource: "@SbtsIssueBundle/Controller"
+    type: annotation
+    prefix: /sbts

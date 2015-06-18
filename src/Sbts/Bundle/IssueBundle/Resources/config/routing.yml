@@ -1,3 +1,0 @@
-sbts_issue:
-    resource: "@SbtsIssueBundle/Controller"
-    type:      annotation

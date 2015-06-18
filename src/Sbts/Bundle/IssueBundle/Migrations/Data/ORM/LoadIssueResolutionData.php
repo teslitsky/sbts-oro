@@ -28,7 +28,7 @@ class LoadIssueResolutionData extends AbstractFixture
             if (!$this->isEntityExist($manager, $name)) {
                 $entity = new IssueResolution();
                 $entity->setName($name);
-                $entity->setLabel($name);
+                $entity->setLabel(ucfirst($name));
 
                 $manager->persist($entity);
             }

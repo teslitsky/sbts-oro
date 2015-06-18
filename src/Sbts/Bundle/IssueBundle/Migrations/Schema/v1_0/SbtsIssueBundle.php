@@ -43,7 +43,7 @@ class SbtsIssueBundle implements Migration
         $table = $schema->createTable('sbts_issue');
 
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
-        $table->addColumn('parent_id', 'integer');
+        $table->addColumn('parent_id', 'integer', ['notnull' => false]);
         $table->addColumn('type_id', 'integer', ['notnull' => false]);
         $table->addColumn('resolution_id', 'integer', ['notnull' => false]);
         $table->addColumn('priority_id', 'integer', ['notnull' => false]);

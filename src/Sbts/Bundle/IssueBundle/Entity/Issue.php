@@ -13,6 +13,7 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
 /**
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
+ * @ORM\HasLifecycleCallbacks
  * @Config
  */
 class Issue extends ExtendIssue
@@ -84,7 +85,7 @@ class Issue extends ExtendIssue
      * @var Issue
      *
      * @ORM\ManyToOne(targetEntity="Issue", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $parent;
 
@@ -100,14 +101,14 @@ class Issue extends ExtendIssue
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $created;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updated;
+    private $updatedAt;
 
     public function __construct()
     {
@@ -369,9 +370,9 @@ class Issue extends ExtendIssue
      *
      * @return self
      */
-    public function setCreated($created)
+    public function setCreatedAt($created)
     {
-        $this->created = $created;
+        $this->createdAt = $created;
 
         return $this;
     }
@@ -381,9 +382,9 @@ class Issue extends ExtendIssue
      *
      * @return \DateTime
      */
-    public function getCreated()
+    public function getCreatedAt()
     {
-        return $this->created;
+        return $this->createdAt;
     }
 
     /**
@@ -393,9 +394,9 @@ class Issue extends ExtendIssue
      *
      * @return self
      */
-    public function setUpdated($updated)
+    public function setUpdatedAt($updated)
     {
-        $this->updated = $updated;
+        $this->updatedAt = $updated;
 
         return $this;
     }
@@ -405,8 +406,25 @@ class Issue extends ExtendIssue
      *
      * @return \DateTime
      */
-    public function getUpdated()
+    public function getUpdatedAt()
     {
-        return $this->updated;
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdateAction()
+    {
+        $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersistAction()
+    {
+        $this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
     }
 }
