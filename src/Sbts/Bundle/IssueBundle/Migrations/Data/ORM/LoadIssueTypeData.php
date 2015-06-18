@@ -30,7 +30,7 @@ class LoadIssueTypeData extends AbstractFixture
             if (!$this->isEntityExist($manager, $name)) {
                 $entity = new IssueType();
                 $entity->setName($name);
-                $entity->setLabel($name);
+                $entity->setLabel(ucfirst($name));
 
                 $manager->persist($entity);
             }
