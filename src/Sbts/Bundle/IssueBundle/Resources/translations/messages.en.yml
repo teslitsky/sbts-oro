@@ -1,0 +1,20 @@
+sbts:
+    issue:
+        label:
+            id: Id
+            entity: Issue
+            entity_plural_label: Issues
+            summary: Summary
+            description: Description
+            assignee: Assignee
+            reporter: Reporter
+            type: Type
+            resolution: Resolution
+            priority: Priority
+            parent: Parent
+            created: Created
+            updated: Updated
+
+        controller:
+            message:
+                saved: Issue has been saved
