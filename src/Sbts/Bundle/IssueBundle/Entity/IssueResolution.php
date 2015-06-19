@@ -99,6 +99,6 @@ class IssueResolution
      */
     public function __toString()
     {
-        return $this->getName();
+        return $this->getLabel();
     }
 }

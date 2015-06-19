@@ -101,6 +101,6 @@ class IssueType
      */
     public function __toString()
     {
-        return $this->getName();
+        return $this->getLabel();
     }
 }
