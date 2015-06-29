@@ -13,11 +13,25 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
 /**
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
- * @ORM\HasLifecycleCallbacks
- * @Config
+ * @ORM\HasLifecycleCallbacks()
+ * @Config()
  */
 class Issue extends ExtendIssue
 {
+    const PRIORITY_BLOCKER = 'blocker';
+    const PRIORITY_CRITICAL = 'critical';
+    const PRIORITY_MAJOR = 'major';
+    const PRIORITY_MINOR = 'minor';
+    const PRIORITY_TRIVIAL = 'trivial';
+
+    const RESOLUTION_UNRESOLVED = 'unresolved';
+    const RESOLUTION_FIXED = 'fixed';
+
+    const TYPE_BUG = 'bug';
+    const TYPE_SUB_TASK = 'sub_task';
+    const TYPE_TASK = 'task';
+    const TYPE_STORY = 'story';
+
     /**
      * @var integer
      *
@@ -40,30 +54,6 @@ class Issue extends ExtendIssue
      * @ORM\Column(name="description", type="text")
      */
     private $description;
-
-    /**
-     * @var IssueType
-     *
-     * @ORM\ManyToOne(targetEntity="IssueType")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $type;
-
-    /**
-     * @var IssuePriority
-     *
-     * @ORM\ManyToOne(targetEntity="IssuePriority")
-     * @ORM\JoinColumn(name="priority_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $priority;
-
-    /**
-     * @var IssueResolution
-     *
-     * @ORM\ManyToOne(targetEntity="IssueResolution")
-     * @ORM\JoinColumn(name="resolution_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $resolution;
 
     /**
      * @var User
@@ -183,78 +173,6 @@ class Issue extends ExtendIssue
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Sets type
-     *
-     * @param IssueType $type
-     *
-     * @return self
-     */
-    public function setType(IssueType $type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Gets type
-     *
-     * @return IssueType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Sets priority
-     *
-     * @param IssuePriority $priority
-     *
-     * @return self
-     */
-    public function setPriority(IssuePriority $priority)
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    /**
-     * Gets priority
-     *
-     * @return IssuePriority
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * Sets resolution
-     *
-     * @param IssueResolution $resolution
-     *
-     * @return self
-     */
-    public function setResolution(IssueResolution $resolution)
-    {
-        $this->resolution = $resolution;
-
-        return $this;
-    }
-
-    /**
-     * Gets resolution
-     *
-     * @return IssueResolution
-     */
-    public function getResolution()
-    {
-        return $this->resolution;
     }
 
     /**

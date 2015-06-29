@@ -2,6 +2,7 @@ sbts:
     issue:
         label:
             id: Id
+            code: Code
             entity: Issue
             entity_plural_label: Issues
             summary: Summary

@@ -12,8 +12,6 @@ use Oro\Bundle\SecurityBundle\Annotation\Acl;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
 
 use Sbts\Bundle\IssueBundle\Entity\Issue;
-use Sbts\Bundle\IssueBundle\Entity\IssuePriority;
-use Sbts\Bundle\IssueBundle\Entity\IssueType;
 
 class IssueController extends Controller
 {
@@ -47,22 +45,6 @@ class IssueController extends Controller
     public function createAction()
     {
         $issue = new Issue();
-
-        $type = $this->getDoctrine()
-            ->getRepository('SbtsIssueBundle:IssueType')
-            ->findOneBy(['name' => IssueType::TYPE_STORY]);
-
-        if ($type) {
-            $issue->setType($type);
-        }
-
-        $priority = $this->getDoctrine()
-            ->getRepository('SbtsIssueBundle:IssuePriority')
-            ->findOneBy(['name' => IssuePriority::PRIORITY_MAJOR]);
-
-        if ($priority) {
-            $issue->setPriority($priority);
-        }
 
         $issue->setReporter($this->getUser());
 
