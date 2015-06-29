@@ -7,7 +7,7 @@
     {% if resource_granted('EDIT', entity) %}
         {{ UI.editButton({
             'path' : path('sbts_issue_update', { id: entity.id }),
-            'entity_label': 'sbts.issue.label.entity' | trans
+            'entity_label': 'sbts.issue.entity_label' | trans
         }) }}
     {% endif %}
     {% if resource_granted('DELETE', entity) %}
@@ -17,7 +17,7 @@
             'aCss': 'no-hash remove-button',
             'id': 'btn-remove-user',
             'dataId': entity.id,
-            'entity_label': 'sbts.issue.label.entity' | trans
+            'entity_label': 'sbts.issue.entity_label' | trans
         }) }}
     {% endif %}
 {% endblock navButtons %}
@@ -26,7 +26,7 @@
     {% set breadcrumbs = {
         'entity': entity,
         'indexPath': path('sbts_issue_index'),
-        'indexLabel': 'sbts.issue.label.entity_plural_label' | trans,
+        'indexLabel': 'sbts.issue.entity_plural_label' | trans,
         'entityTitle': entity.code ~ ' ' ~ entity.summary
     } %}
 
@@ -37,13 +37,13 @@
     {%- set issueInformation -%}
         <div class="row-fluid form-horizontal">
             <div class="responsive-block">
-                {{ UI.renderProperty('sbts.issue.label.summary' | trans, entity.summary) }}
-                {{ UI.renderHtmlProperty('sbts.issue.label.description' | trans, entity.description | nl2br) }}
-                {{ UI.renderProperty('sbts.issue.label.type' | trans, entity.issueType) }}
-                {{ UI.renderProperty('sbts.issue.label.priority' | trans, entity.issuePriority) }}
-                {{ UI.renderProperty('sbts.issue.label.resolution' | trans, entity.issueResolution) }}
-                {{ UI.renderProperty('sbts.issue.label.created' | trans, entity.createdAt | oro_format_datetime) }}
-                {{ UI.renderProperty('sbts.issue.label.updated' | trans, entity.updatedAt | oro_format_datetime) }}
+                {{ UI.renderProperty('sbts.issue.summary.label' | trans, entity.summary) }}
+                {{ UI.renderHtmlProperty('sbts.issue.description.label' | trans, entity.description | nl2br) }}
+                {{ UI.renderProperty('sbts.issue.issue_type.label' | trans, entity.issueType) }}
+                {{ UI.renderProperty('sbts.issue.issue_priority.label' | trans, entity.issuePriority) }}
+                {{ UI.renderProperty('sbts.issue.issue_resolution.label' | trans, entity.issueResolution) }}
+                {{ UI.renderProperty('sbts.issue.created_at.label' | trans, entity.createdAt | oro_format_datetime) }}
+                {{ UI.renderProperty('sbts.issue.updated_at.label' | trans, entity.updatedAt | oro_format_datetime) }}
 
                 {%- set reporterData -%}
                     {%- if entity.reporter -%}
@@ -56,7 +56,7 @@
                         {% endif %}
                     {%- endif -%}
                 {%- endset -%}
-                {{ UI.renderHtmlProperty('sbts.issue.label.reporter' | trans, reporterData) }}
+                {{ UI.renderHtmlProperty('sbts.issue.reporter.label' | trans, reporterData) }}
 
                 {%- set assigneeData -%}
                     {%- if entity.assignee -%}
@@ -69,7 +69,7 @@
                         {% endif %}
                     {%- endif -%}
                 {%- endset -%}
-                {{ UI.renderHtmlProperty('sbts.issue.label.assignee' | trans, assigneeData) }}
+                {{ UI.renderHtmlProperty('sbts.issue.assignee.label' | trans, assigneeData) }}
             </div>
             <div class="responsive-block">
                 {{ entityConfig.renderDynamicFields(entity) }}

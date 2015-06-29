@@ -1,21 +1,37 @@
 sbts:
     issue:
-        label:
-            id: Id
-            code: Code
-            entity: Issue
-            entity_plural_label: Issues
-            summary: Summary
-            description: Description
-            assignee: Assignee
-            reporter: Reporter
-            type: Type
-            resolution: Resolution
-            priority: Priority
-            parent: Parent
-            created: Created
-            updated: Updated
+        entity_label: Issue
+        entity_plural_label: Issues
+        assignee:
+            label: Assignee
+        children:
+            label: Children
+        code:
+            label: Code
+        created_at:
+            label: Created
+        updated_at:
+            label: Updated
+        description:
+            label: Description
+        id:
+            label: Id
+        issue_priority:
+            label: Priority
+        issue_resolution:
+            label: Resolution
+        issue_type:
+            label: Type
+        parent:
+            label: Parent
+        reporter:
+            label: Reporter
+        summary:
+            label: Summary
 
         controller:
             message:
                 saved: Issue has been saved
+
+        form:
+            choose_issue: Choose issue

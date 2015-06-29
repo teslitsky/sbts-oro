@@ -31,32 +31,32 @@ datagrid:
                         - { join: issue.issue_resolution, alias: issueResolution }
         columns:
             id:
-                label:         sbts.issue.label.id
+                label:         sbts.issue.id.label
             summary:
-                label:         sbts.issue.label.summary
+                label:         sbts.issue.summary.label
             type:
-                label:         sbts.issue.label.type
+                label:         sbts.issue.issue_type.label
                 type:          twig
                 frontend_type: html
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/type.html.twig
             priority:
-                label:         sbts.issue.label.priority
+                label:         sbts.issue.issue_priority.label
                 type:          twig
                 frontend_type: html
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/priority.html.twig
             resolution:
-                label:         sbts.issue.label.resolution
+                label:         sbts.issue.issue_resolution.label
                 type:          twig
                 frontend_type: html
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/resolution.html.twig
             reporterName:
                 type:          twig
-                label:         sbts.issue.label.reporter
+                label:         sbts.issue.reporter.label
                 frontend_type: html
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/reporter.html.twig
             assigneeName:
                 type:          twig
-                label:         sbts.issue.label.assignee
+                label:         sbts.issue.assignee.label
                 frontend_type: html
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/assignee.html.twig
             createdAt:

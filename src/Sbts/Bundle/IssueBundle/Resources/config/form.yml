@@ -1,6 +1,7 @@
 parameters:
     sbts_issue.form.type.issue.class:    Sbts\Bundle\IssueBundle\Form\Type\IssueType
     sbts_issue.form.handler.issue.class: Sbts\Bundle\IssueBundle\Form\Handler\IssueHandler
+    sbts.form.type.issue_select.class:   Sbts\Bundle\IssueBundle\Form\Type\IssueSelectType
 
 services:
     sbts_issue.form.type.issue:
@@ -25,3 +26,8 @@ services:
             - @doctrine.orm.entity_manager
             - @oro_activity.manager
             - @oro_entity.routing_helper
+
+    sbts_issue.form.type.issue_select:
+        class: %sbts.form.type.issue_select.class%
+        tags:
+            - { name: form.type, alias: sbts_issue_select }
