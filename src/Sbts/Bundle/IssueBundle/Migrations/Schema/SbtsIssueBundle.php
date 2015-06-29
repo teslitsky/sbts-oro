@@ -14,6 +14,8 @@ class SbtsIssueBundle implements
     ExtendExtensionAwareInterface
 {
     const ISSUE_TABLE_NAME = 'sbts_issue';
+    const USER_TABLE_NAME = 'oro_user';
+    const ORGANIZATION_TABLE_NAME = 'oro_organization';
 
     /**
      * @var ExtendExtension
@@ -43,6 +45,7 @@ class SbtsIssueBundle implements
     {
         $this->createIssueTable($schema);
         $this->updateIssueTable($schema);
+        $this->addIssueForeignKeys($schema);
     }
 
     /**
@@ -50,7 +53,7 @@ class SbtsIssueBundle implements
      *
      * @param Schema $schema
      */
-    public function createIssueTable(Schema $schema)
+    protected function createIssueTable(Schema $schema)
     {
         $table = $schema->createTable(self::ISSUE_TABLE_NAME);
 
@@ -58,6 +61,8 @@ class SbtsIssueBundle implements
         $table->addColumn('parent_id', 'integer', ['notnull' => false]);
         $table->addColumn('reporter_id', 'integer', ['notnull' => false]);
         $table->addColumn('assignee_id', 'integer', ['notnull' => false]);
+        $table->addColumn('owner_id', 'integer', ['notnull' => false]);
+        $table->addColumn('organization_id', 'integer', ['notnull' => false]);
         $table->addColumn('summary', 'string', ['length' => 255]);
         $table->addColumn('description', 'text', ['notnull' => false]);
         $table->addColumn('created_at', 'datetime');
@@ -71,7 +76,7 @@ class SbtsIssueBundle implements
      *
      * @param Schema $schema
      */
-    public function updateIssueTable(Schema $schema)
+    protected function updateIssueTable(Schema $schema)
     {
         $this->extendExtension->addEnumField(
             $schema,
@@ -92,6 +97,44 @@ class SbtsIssueBundle implements
             self::ISSUE_TABLE_NAME,
             'issue_resolution',
             'issue_resolution'
+        );
+    }
+
+    /**
+     * Add sbts_issue foreign keys
+     *
+     * @param Schema $schema
+     */
+    protected function addIssueForeignKeys(Schema $schema)
+    {
+        $table = $schema->getTable('sbts_issue');
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable(self::USER_TABLE_NAME),
+            ['reporter_id'],
+            ['id'],
+            ['onDelete' => 'SET NULL']
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable(self::USER_TABLE_NAME),
+            ['owner_id'],
+            ['id'],
+            ['onDelete' => 'SET NULL']
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable(self::ISSUE_TABLE_NAME),
+            ['parent_id'],
+            ['id'],
+            ['onDelete' => 'CASCADE']
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable(self::ORGANIZATION_TABLE_NAME),
+            ['organization_id'],
+            ['id'],
+            ['onDelete' => 'SET NULL']
         );
     }
 }
