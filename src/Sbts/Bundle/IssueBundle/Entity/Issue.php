@@ -13,10 +13,25 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
 /**
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
- * @Config
+ * @ORM\HasLifecycleCallbacks()
+ * @Config()
  */
 class Issue extends ExtendIssue
 {
+    const PRIORITY_BLOCKER = 'blocker';
+    const PRIORITY_CRITICAL = 'critical';
+    const PRIORITY_MAJOR = 'major';
+    const PRIORITY_MINOR = 'minor';
+    const PRIORITY_TRIVIAL = 'trivial';
+
+    const RESOLUTION_UNRESOLVED = 'unresolved';
+    const RESOLUTION_FIXED = 'fixed';
+
+    const TYPE_BUG = 'bug';
+    const TYPE_SUB_TASK = 'sub_task';
+    const TYPE_TASK = 'task';
+    const TYPE_STORY = 'story';
+
     /**
      * @var integer
      *
@@ -41,30 +56,6 @@ class Issue extends ExtendIssue
     private $description;
 
     /**
-     * @var IssueType
-     *
-     * @ORM\ManyToOne(targetEntity="IssueType")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $type;
-
-    /**
-     * @var IssuePriority
-     *
-     * @ORM\ManyToOne(targetEntity="IssuePriority")
-     * @ORM\JoinColumn(name="priority_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $priority;
-
-    /**
-     * @var IssueResolution
-     *
-     * @ORM\ManyToOne(targetEntity="IssueResolution")
-     * @ORM\JoinColumn(name="resolution_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $resolution;
-
-    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
@@ -84,7 +75,7 @@ class Issue extends ExtendIssue
      * @var Issue
      *
      * @ORM\ManyToOne(targetEntity="Issue", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $parent;
 
@@ -100,14 +91,14 @@ class Issue extends ExtendIssue
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $created;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updated;
+    private $updatedAt;
 
     public function __construct()
     {
@@ -182,78 +173,6 @@ class Issue extends ExtendIssue
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Sets type
-     *
-     * @param IssueType $type
-     *
-     * @return self
-     */
-    public function setType(IssueType $type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Gets type
-     *
-     * @return IssueType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Sets priority
-     *
-     * @param IssuePriority $priority
-     *
-     * @return self
-     */
-    public function setPriority(IssuePriority $priority)
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    /**
-     * Gets priority
-     *
-     * @return IssuePriority
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * Sets resolution
-     *
-     * @param IssueResolution $resolution
-     *
-     * @return self
-     */
-    public function setResolution(IssueResolution $resolution)
-    {
-        $this->resolution = $resolution;
-
-        return $this;
-    }
-
-    /**
-     * Gets resolution
-     *
-     * @return IssueResolution
-     */
-    public function getResolution()
-    {
-        return $this->resolution;
     }
 
     /**
@@ -369,9 +288,9 @@ class Issue extends ExtendIssue
      *
      * @return self
      */
-    public function setCreated($created)
+    public function setCreatedAt($created)
     {
-        $this->created = $created;
+        $this->createdAt = $created;
 
         return $this;
     }
@@ -381,9 +300,9 @@ class Issue extends ExtendIssue
      *
      * @return \DateTime
      */
-    public function getCreated()
+    public function getCreatedAt()
     {
-        return $this->created;
+        return $this->createdAt;
     }
 
     /**
@@ -393,9 +312,9 @@ class Issue extends ExtendIssue
      *
      * @return self
      */
-    public function setUpdated($updated)
+    public function setUpdatedAt($updated)
     {
-        $this->updated = $updated;
+        $this->updatedAt = $updated;
 
         return $this;
     }
@@ -405,8 +324,25 @@ class Issue extends ExtendIssue
      *
      * @return \DateTime
      */
-    public function getUpdated()
+    public function getUpdatedAt()
     {
-        return $this->updated;
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdateAction()
+    {
+        $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersistAction()
+    {
+        $this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
     }
 }

@@ -8,7 +8,7 @@ class IssueControllerTest extends WebTestCase
 {
     protected function setUp()
     {
-        $this->initClient();
+        $this->initClient([], $this->generateBasicAuthHeader());
     }
 
     public function testIndex()
@@ -16,8 +16,5 @@ class IssueControllerTest extends WebTestCase
         $this->client->request('GET', $this->getUrl('sbts_issue_index'));
         $response = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($response, 200);
-
-        $crawler = $this->client->request('GET', $this->getUrl('sbts_issue_index'));
-        $this->assertTrue($crawler->filter('html:contains("Hello Fabien")')->count() === 1);
     }
 }

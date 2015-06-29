@@ -1,7 +1,9 @@
 parameters:
-#    sbts_issue.example.class: Sbts\Bundle\IssueBundle\Example
+    sbts.issue.entity.class: Sbts\Bundle\IssueBundle\Entity\Issue
+    sbts.issue.listener.class: Sbts\Bundle\IssueBundle\EventListener\IssueListener
 
 services:
-#    sbts_issue.example:
-#        class: %sbts_issue.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    sbts_issue.listener:
+        class: %sbts.issue.listener.class%
+        tags:
+            - { name: doctrine.event_listener, event: postFlush }

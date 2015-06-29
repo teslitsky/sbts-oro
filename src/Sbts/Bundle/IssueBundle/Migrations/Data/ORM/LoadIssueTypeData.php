@@ -2,55 +2,38 @@
 
 namespace Sbts\Bundle\IssueBundle\Migrations\Data\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Oro\Bundle\EntityExtendBundle\Migration\Fixture\AbstractEnumFixture;
 
-use Sbts\Bundle\IssueBundle\Entity\IssueType;
+use Sbts\Bundle\IssueBundle\Entity\Issue;
 
-class LoadIssueTypeData extends AbstractFixture
+class LoadIssueTypeData extends AbstractEnumFixture
 {
     /**
-     * @var array
+     * {@inheritdoc}
      */
-    private $data = [
-        IssueType::TYPE_BUG,
-        IssueType::TYPE_STORY,
-        IssueType::TYPE_SUB_TASK,
-        IssueType::TYPE_TASK,
-    ];
-
-    /**
-     * Load sample issue resolution
-     *
-     * @param ObjectManager $manager
-     */
-    public function load(ObjectManager $manager)
+    protected function getData()
     {
-        foreach ($this->data as $name) {
-            if (!$this->isEntityExist($manager, $name)) {
-                $entity = new IssueType();
-                $entity->setName($name);
-                $entity->setLabel($name);
-
-                $manager->persist($entity);
-            }
-        }
-
-        $manager->flush();
+        return [
+            Issue::TYPE_STORY    => 'Story',
+            Issue::TYPE_BUG      => 'Bug',
+            Issue::TYPE_TASK     => 'Task',
+            Issue::TYPE_SUB_TASK => 'Sub-task',
+        ];
     }
 
     /**
-     * Check if entity with this name already exist
-     *
-     * @param ObjectManager $manager
-     * @param               $name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isEntityExist(ObjectManager $manager, $name)
+    protected function getEnumCode()
     {
-        $priority = $manager->getRepository('SbtsIssueBundle:IssueType')->findOneBy(['name' => $name]);
+        return 'issue_type';
+    }
 
-        return null !== $priority;
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultValue()
+    {
+        return Issue::TYPE_STORY;
     }
 }

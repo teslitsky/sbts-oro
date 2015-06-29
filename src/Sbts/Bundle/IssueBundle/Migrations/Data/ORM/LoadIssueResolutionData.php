@@ -2,53 +2,36 @@
 
 namespace Sbts\Bundle\IssueBundle\Migrations\Data\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Oro\Bundle\EntityExtendBundle\Migration\Fixture\AbstractEnumFixture;
 
-use Sbts\Bundle\IssueBundle\Entity\IssueResolution;
+use Sbts\Bundle\IssueBundle\Entity\Issue;
 
-class LoadIssueResolutionData extends AbstractFixture
+class LoadIssueResolutionData extends AbstractEnumFixture
 {
     /**
-     * @var array
+     * {@inheritdoc}
      */
-    private $data = [
-        IssueResolution::RESOLUTION_FIXED,
-        IssueResolution::RESOLUTION_UNRESOLVED,
-    ];
-
-    /**
-     * Load sample issue resolution
-     *
-     * @param ObjectManager $manager
-     */
-    public function load(ObjectManager $manager)
+    protected function getData()
     {
-        foreach ($this->data as $name) {
-            if (!$this->isEntityExist($manager, $name)) {
-                $entity = new IssueResolution();
-                $entity->setName($name);
-                $entity->setLabel($name);
-
-                $manager->persist($entity);
-            }
-        }
-
-        $manager->flush();
+        return [
+            Issue::RESOLUTION_UNRESOLVED => 'Unresolved',
+            Issue::RESOLUTION_FIXED      => 'Fixed',
+        ];
     }
 
     /**
-     * Check if entity with this name already exist
-     *
-     * @param ObjectManager $manager
-     * @param               $name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isEntityExist(ObjectManager $manager, $name)
+    protected function getEnumCode()
     {
-        $priority = $manager->getRepository('SbtsIssueBundle:IssueResolution')->findOneBy(['name' => $name]);
+        return 'issue_resolution';
+    }
 
-        return null !== $priority;
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultValue()
+    {
+        return Issue::RESOLUTION_UNRESOLVED;
     }
 }

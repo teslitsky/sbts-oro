@@ -17,6 +17,9 @@
     "require": {
         "oro/platform": "1.x-dev"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*"
+    },
     "config": {
         "component-dir": "web/bundles/components"
     },
