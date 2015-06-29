@@ -86,7 +86,7 @@ datagrid:
                 updatedAt:
                     data_name: issue.updatedAt
             default:
-                id: DESC
+                updatedAt: DESC
         filters:
             columns:
                 summary:
