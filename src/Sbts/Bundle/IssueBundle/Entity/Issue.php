@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\UserBundle\Entity\User;
 
 use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
@@ -14,7 +15,32 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks()
- * @Config()
+ * @Config(
+ *      routeName="sbts_issue_index",
+ *      routeView="sbts_issue_view",
+ *      defaultValues={
+ *          "entity"={
+ *              "icon"="icon-tasks"
+ *          },
+ *          "ownership"={
+ *              "owner_type"="USER",
+ *              "owner_field_name"="owner",
+ *              "owner_column_name"="owner_id",
+ *              "organization_field_name"="organization",
+ *              "organization_column_name"="organization_id"
+ *          },
+ *          "dataaudit"={
+ *              "auditable"=true
+ *          },
+ *          "security"={
+ *              "type"="ACL"
+ *          },
+ *          "form"={
+ *              "form_type"="sbts_issue_select",
+ *              "grid_name"="issues-grid"
+ *          }
+ *      }
+ * )
  */
 class Issue extends ExtendIssue
 {
@@ -99,6 +125,22 @@ class Issue extends ExtendIssue
      * @ORM\Column(name="updated_at", type="datetime")
      */
     private $updatedAt;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $owner;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $organization;
 
     public function __construct()
     {
@@ -330,6 +372,54 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Sets owner
+     *
+     * @param User $owner
+     *
+     * @return self
+     */
+    public function setOwner(User $owner = null)
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * Gets owner
+     *
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * Sets organization
+     *
+     * @param Organization $organization
+     *
+     * @return self
+     */
+    public function setOrganization(Organization $organization = null)
+    {
+        $this->organization = $organization;
+
+        return $this;
+    }
+
+    /**
+     * Gets organization
+     *
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
      * @ORM\PreUpdate()
      */
     public function preUpdateAction()
@@ -344,5 +434,13 @@ class Issue extends ExtendIssue
     {
         $this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getCode();
     }
 }
