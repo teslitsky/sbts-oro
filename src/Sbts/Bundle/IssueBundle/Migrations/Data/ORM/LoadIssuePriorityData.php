@@ -2,56 +2,39 @@
 
 namespace Sbts\Bundle\IssueBundle\Migrations\Data\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Oro\Bundle\EntityExtendBundle\Migration\Fixture\AbstractEnumFixture;
 
-use Sbts\Bundle\IssueBundle\Entity\IssuePriority;
+use Sbts\Bundle\IssueBundle\Entity\Issue;
 
-class LoadIssuePriorityData extends AbstractFixture
+class LoadIssuePriorityData extends AbstractEnumFixture
 {
     /**
-     * @var array
+     * {@inheritdoc}
      */
-    private $data = [
-        IssuePriority::PRIORITY_BLOCKER,
-        IssuePriority::PRIORITY_CRITICAL,
-        IssuePriority::PRIORITY_MAJOR,
-        IssuePriority::PRIORITY_MINOR,
-        IssuePriority::PRIORITY_TRIVIAL,
-    ];
-
-    /**
-     * Load sample issue priority
-     *
-     * @param ObjectManager $manager
-     */
-    public function load(ObjectManager $manager)
+    protected function getData()
     {
-        foreach ($this->data as $name) {
-            if (!$this->isEntityExist($manager, $name)) {
-                $entity = new IssuePriority();
-                $entity->setName($name);
-                $entity->setLabel(ucfirst($name));
-
-                $manager->persist($entity);
-            }
-        }
-
-        $manager->flush();
+        return [
+            Issue::PRIORITY_BLOCKER  => 'Blocker',
+            Issue::PRIORITY_CRITICAL => 'Critical',
+            Issue::PRIORITY_MAJOR    => 'Major',
+            Issue::PRIORITY_MINOR    => 'Minor',
+            Issue::PRIORITY_TRIVIAL  => 'Trivial',
+        ];
     }
 
     /**
-     * Check if entity with this name already exist
-     *
-     * @param ObjectManager $manager
-     * @param               $name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isEntityExist(ObjectManager $manager, $name)
+    protected function getEnumCode()
     {
-        $priority = $manager->getRepository('SbtsIssueBundle:IssuePriority')->findOneBy(['name' => $name]);
+        return 'issue_priority';
+    }
 
-        return null !== $priority;
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultValue()
+    {
+        return Issue::PRIORITY_MAJOR;
     }
 }

@@ -31,21 +31,36 @@ class IssueType extends AbstractType
                 ]
             )
             ->add(
-                'type',
-                'entity',
+                'issue_type',
+                'oro_enum_select',
                 [
-                    'required' => true,
-                    'label'    => 'sbts.issue.label.type',
-                    'class'    => 'Sbts\Bundle\IssueBundle\Entity\IssueType',
+                    'label'     => 'sbts.issue.label.type',
+                    'enum_code' => 'issue_type',
+                    'configs'   => [
+                        'allowClear' => false,
+                    ]
                 ]
             )
             ->add(
-                'priority',
-                'entity',
+                'issue_priority',
+                'oro_enum_select',
                 [
-                    'required' => true,
-                    'label'    => 'sbts.issue.label.priority',
-                    'class'    => 'Sbts\Bundle\IssueBundle\Entity\IssuePriority',
+                    'label'     => 'sbts.issue.label.priority',
+                    'enum_code' => 'issue_priority',
+                    'configs'   => [
+                        'allowClear' => false,
+                    ]
+                ]
+            )
+            ->add(
+                'issue_resolution',
+                'oro_enum_select',
+                [
+                    'label'     => 'sbts.issue.label.resolution',
+                    'enum_code' => 'issue_resolution',
+                    'configs'   => [
+                        'allowClear' => false,
+                    ]
                 ]
             )
             ->add(

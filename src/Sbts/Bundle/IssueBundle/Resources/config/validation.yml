@@ -7,9 +7,3 @@ Sbts\Bundle\IssueBundle\Entity\Issue:
 
         description:
             - NotBlank: ~
-
-        type:
-            - NotBlank: ~
-
-        priority:
-            - NotBlank: ~

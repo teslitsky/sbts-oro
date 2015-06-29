@@ -40,8 +40,9 @@
         'data': [
             form_row(form.summary),
             form_row(form.description),
-            form_row(form.type),
-            form_row(form.priority),
+            form_row(form.issue_type),
+            form_row(form.issue_priority),
+            form_row(form.issue_resolution),
             form.reporter is defined ? form_row(form.reporter) : '',
             form.assignee is defined ? form_row(form.assignee) : '',
         ]

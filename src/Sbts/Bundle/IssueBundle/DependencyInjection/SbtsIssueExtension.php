@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader;
 class SbtsIssueExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
