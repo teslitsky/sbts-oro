@@ -76,6 +76,11 @@ class Issue extends ExtendIssue
 
     /**
      * @var string
+     */
+    private $code;
+
+    /**
+     * @var string
      *
      * @ORM\Column(name="description", type="text")
      */
@@ -96,6 +101,38 @@ class Issue extends ExtendIssue
      * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $assignee;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Oro\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinTable(
+     *      name="sbts_issue_to_collaborator",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *      }
+     * )
+     */
+    protected $collaborators;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Issue")
+     * @ORM\JoinTable(
+     *      name="sbts_issue_to_issue",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="linked_issue_id", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
+     */
+    protected $related;
 
     /**
      * @var Issue
@@ -146,6 +183,8 @@ class Issue extends ExtendIssue
     {
         parent::__construct();
 
+        $this->collaborators = new ArrayCollection();
+        $this->related = new ArrayCollection();
         $this->children = new ArrayCollection();
     }
 
@@ -184,13 +223,27 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Sets issue code
+     *
+     * @param string $code
+     *
+     * @return self
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
      * Gets issue code
      *
      * @return string
      */
     public function getCode()
     {
-        return '';
+        return $this->code;
     }
 
     /**
@@ -266,11 +319,107 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Adds collaborator
+     *
+     * @param User $user
+     *
+     * @return Issue
+     */
+    public function addCollaborator(User $user)
+    {
+        if (!$this->hasCollaborator($user)) {
+            $this->collaborators->add($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes collaborator
+     *
+     * @param User $user
+     */
+    public function removeCollaborator(User $user)
+    {
+        $this->collaborators->removeElement($user);
+    }
+
+    /**
+     * Has collaborator
+     *
+     * @param User $user
+     *
+     * @return  boolean
+     */
+    public function hasCollaborator(User $user)
+    {
+        return $this->collaborators->contains($user);
+    }
+
+    /**
+     *  Gets collaborators
+     *
+     * @return ArrayCollection
+     */
+    public function getCollaborators()
+    {
+        return $this->collaborators;
+    }
+
+    /**
+     * Adds related issue
+     *
+     * @param Issue $issue
+     *
+     * @return self
+     */
+    public function addRelated(Issue $issue)
+    {
+        if (!$this->hasRelated($issue)) {
+            $this->related->add($issue);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes related issue
+     *
+     * @param Issue $issue
+     */
+    public function removeRelated(Issue $issue)
+    {
+        $this->related->removeElement($issue);
+    }
+
+    /**
+     * Has related issue
+     *
+     * @param Issue $issue
+     *
+     * @return boolean
+     */
+    public function hasRelated(Issue $issue)
+    {
+        return $this->related->contains($issue);
+    }
+
+    /**
+     *  Gets related issues
+     *
+     * @return ArrayCollection
+     */
+    public function getRelated()
+    {
+        return $this->related;
+    }
+
+    /**
      * Sets parent
      *
      * @param Issue $parent
      *
-     * @return User
+     * @return self
      */
     public function setParent(Issue $parent)
     {

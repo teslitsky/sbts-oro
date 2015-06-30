@@ -16,6 +16,8 @@ class SbtsIssueBundle implements
     const ISSUE_TABLE_NAME = 'sbts_issue';
     const USER_TABLE_NAME = 'oro_user';
     const ORGANIZATION_TABLE_NAME = 'oro_organization';
+    const ISSUE_COLLABORATORS_TABLE_NAME = 'sbts_issue_to_collaborator';
+    const ISSUE_RELATIONS_TABLE_NAME = 'sbts_issue_to_issue';
 
     /**
      * @var ExtendExtension
@@ -45,7 +47,13 @@ class SbtsIssueBundle implements
     {
         $this->createIssueTable($schema);
         $this->updateIssueTable($schema);
+
+        $this->createIssueToCollaboratorTable($schema);
+        $this->createIssueToIssueTable($schema);
+
         $this->addIssueForeignKeys($schema);
+        $this->addIssueToCollaboratorForeignKeys($schema);
+        $this->addIssueToIssueForeignKeys($schema);
     }
 
     /**
@@ -101,6 +109,38 @@ class SbtsIssueBundle implements
     }
 
     /**
+     * Create sbts_issue_to_collaborator table
+     *
+     * @param Schema $schema
+     */
+    protected function createIssueToCollaboratorTable(Schema $schema)
+    {
+        $table = $schema->createTable(self::ISSUE_COLLABORATORS_TABLE_NAME);
+
+        $table->addColumn('issue_id', 'integer');
+        $table->addColumn('user_id', 'integer');
+        $table->setPrimaryKey(['issue_id', 'user_id']);
+        $table->addIndex(['issue_id'], 'IDX_CBCCC8725E7AA58C');
+        $table->addIndex(['user_id'], 'IDX_CBCCC872A76ED395');
+    }
+
+    /**
+     * Create sbts_issue_to_issue table
+     *
+     * @param Schema $schema
+     */
+    protected function createIssueToIssueTable(Schema $schema)
+    {
+        $table = $schema->createTable(self::ISSUE_RELATIONS_TABLE_NAME);
+
+        $table->addColumn('issue_id', 'integer');
+        $table->addColumn('linked_issue_id', 'integer');
+        $table->setPrimaryKey(['issue_id', 'linked_issue_id']);
+        $table->addIndex(['issue_id'], 'IDX_C70EC5B95E7AA58C');
+        $table->addIndex(['linked_issue_id'], 'IDX_C70EC5B9307AEB53');
+    }
+
+    /**
      * Add sbts_issue foreign keys
      *
      * @param Schema $schema
@@ -135,6 +175,54 @@ class SbtsIssueBundle implements
             ['organization_id'],
             ['id'],
             ['onDelete' => 'SET NULL']
+        );
+    }
+
+    /**
+     * Adds sbts_issue_to_collaborator foreign keys
+     *
+     * @param Schema $schema
+     */
+    protected function addIssueToCollaboratorForeignKeys(Schema $schema)
+    {
+        $table = $schema->getTable(self::ISSUE_COLLABORATORS_TABLE_NAME);
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable('sbts_issue'),
+            ['issue_id'],
+            ['id'],
+            ['onDelete' => 'CASCADE', 'onUpdate' => null]
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable('oro_user'),
+            ['user_id'],
+            ['id'],
+            ['onDelete' => null, 'onUpdate' => null]
+        );
+    }
+
+    /**
+     * Adds sbts_issue_to_issue foreign keys
+     *
+     * @param Schema $schema
+     */
+    protected function addIssueToIssueForeignKeys(Schema $schema)
+    {
+        $table = $schema->getTable(self::ISSUE_RELATIONS_TABLE_NAME);
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable('sbts_issue'),
+            ['linked_issue_id'],
+            ['id'],
+            ['onDelete' => 'CASCADE', 'onUpdate' => null]
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable('sbts_issue'),
+            ['issue_id'],
+            ['id'],
+            ['onDelete' => 'CASCADE', 'onUpdate' => null]
         );
     }
 }
