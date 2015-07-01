@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\UserBundle\Entity\User;
 
 use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
@@ -14,7 +15,32 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
  * @ORM\Table(name="sbts_issue")
  * @ORM\Entity(repositoryClass="Sbts\Bundle\IssueBundle\Entity\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks()
- * @Config()
+ * @Config(
+ *      routeName="sbts_issue_index",
+ *      routeView="sbts_issue_view",
+ *      defaultValues={
+ *          "entity"={
+ *              "icon"="icon-tasks"
+ *          },
+ *          "ownership"={
+ *              "owner_type"="USER",
+ *              "owner_field_name"="owner",
+ *              "owner_column_name"="owner_id",
+ *              "organization_field_name"="organization",
+ *              "organization_column_name"="organization_id"
+ *          },
+ *          "dataaudit"={
+ *              "auditable"=true
+ *          },
+ *          "security"={
+ *              "type"="ACL"
+ *          },
+ *          "form"={
+ *              "form_type"="sbts_issue_select",
+ *              "grid_name"="issues-grid"
+ *          }
+ *      }
+ * )
  */
 class Issue extends ExtendIssue
 {
@@ -50,6 +76,11 @@ class Issue extends ExtendIssue
 
     /**
      * @var string
+     */
+    private $code;
+
+    /**
+     * @var string
      *
      * @ORM\Column(name="description", type="text")
      */
@@ -70,6 +101,38 @@ class Issue extends ExtendIssue
      * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $assignee;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Oro\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinTable(
+     *      name="sbts_issue_to_collaborator",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *      }
+     * )
+     */
+    protected $collaborators;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Issue")
+     * @ORM\JoinTable(
+     *      name="sbts_issue_to_issue",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="linked_issue_id", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
+     */
+    protected $related;
 
     /**
      * @var Issue
@@ -100,10 +163,28 @@ class Issue extends ExtendIssue
      */
     private $updatedAt;
 
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $owner;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $organization;
+
     public function __construct()
     {
         parent::__construct();
 
+        $this->collaborators = new ArrayCollection();
+        $this->related = new ArrayCollection();
         $this->children = new ArrayCollection();
     }
 
@@ -142,13 +223,27 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Sets issue code
+     *
+     * @param string $code
+     *
+     * @return self
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
      * Gets issue code
      *
      * @return string
      */
     public function getCode()
     {
-        return '';
+        return $this->code;
     }
 
     /**
@@ -224,11 +319,107 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Adds collaborator
+     *
+     * @param User $user
+     *
+     * @return Issue
+     */
+    public function addCollaborator(User $user)
+    {
+        if (!$this->hasCollaborator($user)) {
+            $this->collaborators->add($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes collaborator
+     *
+     * @param User $user
+     */
+    public function removeCollaborator(User $user)
+    {
+        $this->collaborators->removeElement($user);
+    }
+
+    /**
+     * Has collaborator
+     *
+     * @param User $user
+     *
+     * @return  boolean
+     */
+    public function hasCollaborator(User $user)
+    {
+        return $this->collaborators->contains($user);
+    }
+
+    /**
+     *  Gets collaborators
+     *
+     * @return ArrayCollection
+     */
+    public function getCollaborators()
+    {
+        return $this->collaborators;
+    }
+
+    /**
+     * Adds related issue
+     *
+     * @param Issue $issue
+     *
+     * @return self
+     */
+    public function addRelated(Issue $issue)
+    {
+        if (!$this->hasRelated($issue)) {
+            $this->related->add($issue);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes related issue
+     *
+     * @param Issue $issue
+     */
+    public function removeRelated(Issue $issue)
+    {
+        $this->related->removeElement($issue);
+    }
+
+    /**
+     * Has related issue
+     *
+     * @param Issue $issue
+     *
+     * @return boolean
+     */
+    public function hasRelated(Issue $issue)
+    {
+        return $this->related->contains($issue);
+    }
+
+    /**
+     *  Gets related issues
+     *
+     * @return ArrayCollection
+     */
+    public function getRelated()
+    {
+        return $this->related;
+    }
+
+    /**
      * Sets parent
      *
      * @param Issue $parent
      *
-     * @return User
+     * @return self
      */
     public function setParent(Issue $parent)
     {
@@ -330,6 +521,54 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Sets owner
+     *
+     * @param User $owner
+     *
+     * @return self
+     */
+    public function setOwner(User $owner = null)
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * Gets owner
+     *
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * Sets organization
+     *
+     * @param Organization $organization
+     *
+     * @return self
+     */
+    public function setOrganization(Organization $organization = null)
+    {
+        $this->organization = $organization;
+
+        return $this;
+    }
+
+    /**
+     * Gets organization
+     *
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
      * @ORM\PreUpdate()
      */
     public function preUpdateAction()
@@ -344,5 +583,13 @@ class Issue extends ExtendIssue
     {
         $this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getCode();
     }
 }

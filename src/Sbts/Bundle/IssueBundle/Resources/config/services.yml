@@ -5,5 +5,8 @@ parameters:
 services:
     sbts_issue.listener:
         class: %sbts.issue.listener.class%
+        arguments: [@service_container]
         tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: onFlush }
             - { name: doctrine.event_listener, event: postFlush }
