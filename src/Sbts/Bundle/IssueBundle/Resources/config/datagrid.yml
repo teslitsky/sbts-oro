@@ -10,8 +10,8 @@ datagrid:
                     - issue.description
                     - CONCAT(reporter.firstName, CONCAT(' ', reporter.lastName)) as reporterName
                     - reporter.id as reporterId
-                    - CONCAT(assignee.firstName, CONCAT(' ', assignee.lastName)) as assigneeName
-                    - assignee.id as assigneeId
+                    - CONCAT(owner.firstName, CONCAT(' ', owner.lastName)) as assigneeName
+                    - owner.id as assigneeId
                     - issue.createdAt
                     - issue.updatedAt
                     - issuePriority.id as priorityId
@@ -25,7 +25,7 @@ datagrid:
                 join:
                     left:
                         - { join: issue.reporter, alias: reporter }
-                        - { join: issue.assignee, alias: assignee }
+                        - { join: issue.owner, alias: owner }
                         - { join: issue.issue_priority, alias: issuePriority }
                         - { join: issue.issue_type, alias: issueType }
                         - { join: issue.issue_resolution, alias: issueResolution }
@@ -56,7 +56,7 @@ datagrid:
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/reporter.html.twig
             assigneeName:
                 type:          twig
-                label:         sbts.issue.assignee.label
+                label:         sbts.issue.owner.label
                 frontend_type: html
                 template:      SbtsIssueBundle:Issue:Datagrid/Property/assignee.html.twig
             createdAt:

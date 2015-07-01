@@ -44,7 +44,7 @@
             form_row(form.issue_priority),
             form_row(form.issue_resolution),
             form.reporter is defined ? form_row(form.reporter) : '',
-            form.assignee is defined ? form_row(form.assignee) : '',
+            form.assignee is defined ? form_row(form.owner) : '',
         ]
         }]
     }] %}

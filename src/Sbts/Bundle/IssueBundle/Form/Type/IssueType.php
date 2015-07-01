@@ -72,7 +72,7 @@ class IssueType extends AbstractType
                 ]
             )
             ->add(
-                'assignee',
+                'owner',
                 'oro_user_select',
                 [
                     'required' => true,
