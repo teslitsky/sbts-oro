@@ -1,13 +1,14 @@
 {% extends 'OroUIBundle:actions:index.html.twig' %}
 {% import 'OroUIBundle::macros.html.twig' as UI %}
 
-{% set pageTitle = 'sbts.issue.label.entity_plural_label' | trans %}
+{% set pageTitle = 'sbts.issue.entity_plural_label' | trans %}
+{% set gridName = 'issues-grid' %}
 
 {% block navButtons %}
     {% if resource_granted('sbts_issue_create') %}
         {{ UI.addButton({
             'path': path('sbts_issue_create'),
-            'entity_label': 'sbts.issue.label.entity' | trans
+            'entity_label': 'sbts.issue.entity_label' | trans
         }) }}
     {% endif %}
 {% endblock %}
