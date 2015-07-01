@@ -9,6 +9,10 @@ use Oro\Bundle\EntityExtendBundle\Migration\Extension\ExtendExtensionAwareInterf
 use Oro\Bundle\MigrationBundle\Migration\Installation;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ */
 class SbtsIssueBundle implements
     Installation,
     ExtendExtensionAwareInterface
@@ -68,7 +72,6 @@ class SbtsIssueBundle implements
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('parent_id', 'integer', ['notnull' => false]);
         $table->addColumn('reporter_id', 'integer', ['notnull' => false]);
-        $table->addColumn('assignee_id', 'integer', ['notnull' => false]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
         $table->addColumn('organization_id', 'integer', ['notnull' => false]);
         $table->addColumn('summary', 'string', ['length' => 255]);
@@ -77,6 +80,10 @@ class SbtsIssueBundle implements
         $table->addColumn('updated_at', 'datetime');
 
         $table->setPrimaryKey(['id']);
+        $table->addIndex(['reporter_id'], 'idx_sbts_issue_reporter_id', []);
+        $table->addIndex(['owner_id'], 'idx_sbts_issue_owner_id', []);
+        $table->addIndex(['parent_id'], 'idx_sbts_issue_parent_id', []);
+        $table->addIndex(['organization_id'], 'idx_sbts_issue_organization_id', []);
     }
 
     /**
@@ -119,6 +126,7 @@ class SbtsIssueBundle implements
 
         $table->addColumn('issue_id', 'integer');
         $table->addColumn('user_id', 'integer');
+
         $table->setPrimaryKey(['issue_id', 'user_id']);
         $table->addIndex(['issue_id'], 'IDX_CBCCC8725E7AA58C');
         $table->addIndex(['user_id'], 'IDX_CBCCC872A76ED395');
@@ -135,6 +143,7 @@ class SbtsIssueBundle implements
 
         $table->addColumn('issue_id', 'integer');
         $table->addColumn('linked_issue_id', 'integer');
+
         $table->setPrimaryKey(['issue_id', 'linked_issue_id']);
         $table->addIndex(['issue_id'], 'IDX_C70EC5B95E7AA58C');
         $table->addIndex(['linked_issue_id'], 'IDX_C70EC5B9307AEB53');

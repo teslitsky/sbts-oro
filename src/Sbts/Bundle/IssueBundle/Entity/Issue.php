@@ -65,26 +65,26 @@ class Issue extends ExtendIssue
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="summary", type="string", length=255)
      */
-    private $summary;
+    protected $summary;
 
     /**
      * @var string
      */
-    private $code;
+    protected $code;
 
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text")
      */
-    private $description;
+    protected $description;
 
     /**
      * @var User
@@ -92,15 +92,23 @@ class Issue extends ExtendIssue
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="reporter_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    private $reporter;
+    protected $reporter;
 
     /**
-     * @var User
+     * @var User Assignee user
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    private $assignee;
+    protected $owner;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $organization;
 
     /**
      * @var ArrayCollection
@@ -140,44 +148,28 @@ class Issue extends ExtendIssue
      * @ORM\ManyToOne(targetEntity="Issue", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
-    private $parent;
+    protected $parent;
 
     /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="parent")
      */
-    private $children;
+    protected $children;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $owner;
-
-    /**
-     * @var Organization
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
-     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $organization;
+    protected $updatedAt;
 
     public function __construct()
     {
@@ -292,30 +284,6 @@ class Issue extends ExtendIssue
     public function getReporter()
     {
         return $this->reporter;
-    }
-
-    /**
-     * Sets assignee
-     *
-     * @param User $assignee
-     *
-     * @return self
-     */
-    public function setAssignee(User $assignee)
-    {
-        $this->assignee = $assignee;
-
-        return $this;
-    }
-
-    /**
-     * Gets assignee
-     *
-     * @return User
-     */
-    public function getAssignee()
-    {
-        return $this->assignee;
     }
 
     /**
