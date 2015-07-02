@@ -1,7 +1,9 @@
 sbts:
+    label: Sbts
     issue:
         entity_label: Issue
         entity_plural_label: Issues
+        create_entity: Create Issue
         owner:
             label: Assignee
         children:
