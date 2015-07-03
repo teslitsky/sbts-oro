@@ -6,6 +6,10 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 use Sbts\Bundle\IssueBundle\Entity\Issue;
 
+/**
+ * @dbIsolation
+ * @dbReindex
+ */
 class IssueControllerTest extends WebTestCase
 {
     protected function setUp()
@@ -23,7 +27,7 @@ class IssueControllerTest extends WebTestCase
         $form['sbts_issue[issue_type]'] = Issue::TYPE_BUG;
         $form['sbts_issue[issue_priority]'] = Issue::PRIORITY_MAJOR;
         $form['sbts_issue[reporter]'] = '1';
-        $form['sbts_issue[assignee]'] = '1';
+        $form['sbts_issue[owner]'] = '1';
 
         $this->client->followRedirects(true);
         $crawler = $this->client->submit($form);
