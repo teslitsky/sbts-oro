@@ -1,6 +1,6 @@
 <?php
 
-namespace Sbts\Bundle\IssueBundle\Migrations\Schema\v1_0;
+namespace Sbts\Bundle\IssueBundle\Migrations\Schema;
 
 use Doctrine\DBAL\Schema\Schema;
 
@@ -8,14 +8,17 @@ use Oro\Bundle\EntityExtendBundle\Migration\Extension\ExtendExtension;
 use Oro\Bundle\EntityExtendBundle\Migration\Extension\ExtendExtensionAwareInterface;
 use Oro\Bundle\MigrationBundle\Migration\Installation;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
+use Oro\Bundle\NoteBundle\Migration\Extension\NoteExtension;
+use Oro\Bundle\NoteBundle\Migration\Extension\NoteExtensionAwareInterface;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  */
-class SbtsIssueBundle implements
+class SbtsIssueBundleInstaller implements
     Installation,
-    ExtendExtensionAwareInterface
+    ExtendExtensionAwareInterface,
+    NoteExtensionAwareInterface
 {
     const ISSUE_TABLE_NAME = 'sbts_issue';
     const USER_TABLE_NAME = 'oro_user';
@@ -29,11 +32,24 @@ class SbtsIssueBundle implements
     protected $extendExtension;
 
     /**
+     * @var NoteExtension
+     */
+    protected $noteExtension;
+
+    /**
      * {@inheritdoc}
      */
     public function setExtendExtension(ExtendExtension $extendExtension)
     {
         $this->extendExtension = $extendExtension;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNoteExtension(NoteExtension $noteExtension)
+    {
+        $this->noteExtension = $noteExtension;
     }
 
     /**
@@ -113,6 +129,8 @@ class SbtsIssueBundle implements
             'issue_resolution',
             'issue_resolution'
         );
+
+        $this->noteExtension->addNoteAssociation($schema, self::ISSUE_TABLE_NAME);
     }
 
     /**
