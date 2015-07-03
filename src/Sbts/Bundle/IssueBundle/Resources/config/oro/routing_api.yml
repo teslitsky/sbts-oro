@@ -1,0 +1,3 @@
+sbts_api:
+    resource:     "@SbtsIssueBundle/Controller/Api/Rest/IssueController.php"
+    type:         rest

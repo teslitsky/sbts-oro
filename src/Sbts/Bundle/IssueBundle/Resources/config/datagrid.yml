@@ -128,6 +128,10 @@ datagrid:
                 type:   url
                 route:  sbts_issue_update
                 params: [ id ]
+            delete_link:
+                type:   url
+                route:  sbts_api_delete_issue
+                params: [ id ]
         actions:
             view:
                 type:          navigate
@@ -142,4 +146,11 @@ datagrid:
                 label:         oro.grid.action.view
                 icon:          edit
                 link:          update_link
+                rowAction:     true
+            delete:
+                type:          delete
+                acl_resource:  sbts_issue_api_delete
+                label:         oro.grid.action.delete
+                icon:          trash
+                link:          delete_link
                 rowAction:     true
