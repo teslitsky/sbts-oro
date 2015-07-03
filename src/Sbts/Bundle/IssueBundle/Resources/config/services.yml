@@ -1,5 +1,5 @@
 parameters:
-    sbts.issue.entity.class: Sbts\Bundle\IssueBundle\Entity\Issue
+    sbts.issue.entity.class:   Sbts\Bundle\IssueBundle\Entity\Issue
     sbts.issue.listener.class: Sbts\Bundle\IssueBundle\EventListener\IssueListener
 
 services:
