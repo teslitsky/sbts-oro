@@ -1,15 +1,22 @@
 parameters:
-    sbts_issue.form.type.issue.class:    Sbts\Bundle\IssueBundle\Form\Type\IssueType
-    sbts_issue.form.handler.issue.class: Sbts\Bundle\IssueBundle\Form\Handler\IssueHandler
+    sbts.form.type.issue.class:          Sbts\Bundle\IssueBundle\Form\Type\IssueType
+    sbts.form.type.issue_api.class:      Sbts\Bundle\IssueBundle\Form\Type\IssueApiType
+    sbts.form.handler.issue.class:       Sbts\Bundle\IssueBundle\Form\Handler\IssueHandler
     sbts.form.type.issue_select.class:   Sbts\Bundle\IssueBundle\Form\Type\IssueSelectType
+    sbts.manager.api.class:              Oro\Bundle\SoapBundle\Entity\Manager\ApiEntityManager
 
 services:
-    sbts_issue.form.type.issue:
-        class: %sbts_issue.form.type.issue.class%
+    sbts.form.type.issue:
+        class: %sbts.form.type.issue.class%
         tags:
             - { name: form.type, alias: sbts_issue }
 
-    sbts_issue.form:
+    sbts.form.type.issue_api:
+        class: %sbts.form.type.issue_api.class%
+        tags:
+            - { name: form.type, alias: sbts_issue_api }
+
+    sbts.form:
         class: Symfony\Component\Form\Form
         factory_method: createNamed
         factory_service: form.factory
@@ -17,17 +24,42 @@ services:
             - 'sbts_issue'
             - 'sbts_issue'
 
-    sbts_issue.form.handler.issue:
-        class: %sbts_issue.form.handler.issue.class%
+    sbts.form.handler.issue:
+        class: %sbts.form.handler.issue.class%
         scope: request
         arguments:
-            - @sbts_issue.form
+            - @sbts.form
             - @request
             - @doctrine.orm.entity_manager
             - @oro_activity.manager
             - @oro_entity.routing_helper
 
-    sbts_issue.form.type.issue_select:
+    sbts.form.type.issue_select:
         class: %sbts.form.type.issue_select.class%
         tags:
             - { name: form.type, alias: sbts_issue_select }
+
+    sbts.manager.api:
+        class: %sbts.manager.api.class%
+        parent: oro_soap.manager.entity_manager.abstract
+        arguments:
+            - %sbts.issue.entity.class%
+            - @doctrine.orm.entity_manager
+
+    sbts.form.api:
+        class: Symfony\Component\Form\Form
+        factory_method: createNamed
+        factory_service: form.factory
+        arguments:
+            - ~
+            - 'sbts_issue_api'
+
+    sbts.form.handler.issue_api:
+        class: %sbts.form.handler.issue.class%
+        scope: request
+        arguments:
+            - @sbts.form.api
+            - @request
+            - @doctrine.orm.entity_manager
+            - @oro_activity.manager
+            - @oro_entity.routing_helper

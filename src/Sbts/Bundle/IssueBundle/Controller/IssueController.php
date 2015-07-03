@@ -97,7 +97,7 @@ class IssueController extends Controller
      */
     protected function update(Issue $issue, $formAction)
     {
-        if ($this->get('sbts_issue.form.handler.issue')->process($issue)) {
+        if ($this->get('sbts.form.handler.issue')->process($issue)) {
             $this->get('session')->getFlashBag()->add(
                 'success',
                 $this->get('translator')->trans('sbts.issue.controller.message.saved')
@@ -117,7 +117,7 @@ class IssueController extends Controller
 
         return [
             'entity'     => $issue,
-            'form'       => $this->get('sbts_issue.form.handler.issue')->getForm()->createView(),
+            'form'       => $this->get('sbts.form.handler.issue')->getForm()->createView(),
             'formAction' => $formAction,
         ];
     }
