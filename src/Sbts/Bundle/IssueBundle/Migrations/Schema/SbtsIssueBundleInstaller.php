@@ -25,6 +25,8 @@ class SbtsIssueBundleInstaller implements
     const ORGANIZATION_TABLE_NAME = 'oro_organization';
     const ISSUE_COLLABORATORS_TABLE_NAME = 'sbts_issue_to_collaborator';
     const ISSUE_RELATIONS_TABLE_NAME = 'sbts_issue_to_issue';
+    const WORKFLOW_ITEM_TABLE_NAME = 'oro_workflow_item';
+    const WORKFLOW_STEP_TABLE_NAME = 'oro_workflow_step';
 
     /**
      * @var ExtendExtension
@@ -90,6 +92,8 @@ class SbtsIssueBundleInstaller implements
         $table->addColumn('reporter_id', 'integer', ['notnull' => false]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
         $table->addColumn('organization_id', 'integer', ['notnull' => false]);
+        $table->addColumn('workflow_item_id', 'integer', ['notnull' => false]);
+        $table->addColumn('workflow_step_id', 'integer', ['notnull' => false]);
         $table->addColumn('summary', 'string', ['length' => 255]);
         $table->addColumn('description', 'text', ['notnull' => false]);
         $table->addColumn('created_at', 'datetime');
@@ -100,6 +104,7 @@ class SbtsIssueBundleInstaller implements
         $table->addIndex(['owner_id'], 'idx_sbts_issue_owner_id', []);
         $table->addIndex(['parent_id'], 'idx_sbts_issue_parent_id', []);
         $table->addIndex(['organization_id'], 'idx_sbts_issue_organization_id', []);
+        $table->addIndex(['workflow_step_id'], 'IDX_50ACC41271FE882C', []);
     }
 
     /**
@@ -202,6 +207,20 @@ class SbtsIssueBundleInstaller implements
             ['organization_id'],
             ['id'],
             ['onDelete' => 'SET NULL']
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable(self::WORKFLOW_ITEM_TABLE_NAME),
+            ['workflow_item_id'],
+            ['id'],
+            ['onDelete' => 'SET NULL', 'onUpdate' => null]
+        );
+
+        $table->addForeignKeyConstraint(
+            $schema->getTable(self::WORKFLOW_STEP_TABLE_NAME),
+            ['workflow_step_id'],
+            ['id'],
+            ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
     }
 

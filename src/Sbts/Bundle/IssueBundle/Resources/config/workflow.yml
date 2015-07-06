@@ -1,0 +1,99 @@
+workflows:
+    issue_flow:
+        label: 'Issue flow'
+        entity: Sbts\Bundle\IssueBundle\Entity\Issue
+        entity_attribute: issue
+        start_step: open
+        steps_display_ordered: true
+
+        steps:
+            open:
+                label: 'Open'
+                order: 10
+                allowed_transitions:
+                    - start_progress
+                    - resolve
+                    - close
+            in_progress:
+                label: 'In progress'
+                order: 20
+                allowed_transitions:
+                    - stop_progress
+                    - resolve
+                    - close
+            closed:
+                label: 'Closed'
+                order: 40
+                allowed_transitions:
+                    - reopen
+            resolved:
+                label: 'Resolved'
+                order: 30
+                allowed_transitions:
+                    - close
+                    - reopen
+
+        attributes:
+            issue_resolution:
+                label: 'Issue resolution'
+                type: entity
+                options:
+                    class: Oro\Bundle\EntityExtendBundle\Entity\AbstractEnumValue
+                property_path: issue.issue_resolution
+        transitions:
+            start_progress:
+                label: 'Start progress'
+                step_to: in_progress
+                frontend_options:
+                    icon: 'icon-play'
+                    class: 'btn-primary'
+                transition_definition: start_progress_definition
+            stop_progress:
+                label: 'Stop progress'
+                step_to: open
+                frontend_options:
+                    icon: 'icon-stop'
+                    class: 'btn-primary'
+                transition_definition: stop_progress_definition
+            resolve:
+                label: 'Resolve'
+                step_to: resolved
+                frontend_options:
+                    icon: 'icon-star'
+                transition_definition: resolved_definition
+                form_options:
+                    attribute_fields:
+                        issue_resolution:
+                            options:
+                                required: true
+                                constraints:
+                                    - NotBlank: ~
+            close:
+                label: 'Close'
+                step_to: closed
+                frontend_options:
+                    icon: 'icon-ok'
+                transition_definition: closed_definition
+                form_options:
+                    attribute_fields:
+                        issue_resolution:
+                            options:
+                                required: true
+                                constraints:
+                                    - NotBlank: ~
+            reopen:
+                label: 'Reopen'
+                step_to: open
+                frontend_options:
+                    icon: 'icon-refresh'
+                transition_definition: reopen_definition
+
+        transition_definitions:
+            start_progress_definition: ~
+            stop_progress_definition: ~
+            resolved_definition: ~
+            closed_definition: ~
+            reopen_definition:
+                post_actions:
+                    - @assign_value:
+                        - [$issue_resolution, ~]
