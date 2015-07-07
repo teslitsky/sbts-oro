@@ -38,8 +38,7 @@ workflows:
                 label: 'Issue resolution'
                 type: entity
                 options:
-                    class: Oro\Bundle\EntityExtendBundle\Entity\AbstractEnumValue
-                property_path: issue.issue_resolution
+                    class: Extend\Entity\EV_Issue_Resolution
         transitions:
             start_progress:
                 label: 'Start progress'
