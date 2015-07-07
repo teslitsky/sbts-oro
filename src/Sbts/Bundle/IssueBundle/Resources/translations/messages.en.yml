@@ -30,6 +30,8 @@ sbts:
             label: Reporter
         summary:
             label: Summary
+        status:
+            label: Status
 
         controller:
             message:
