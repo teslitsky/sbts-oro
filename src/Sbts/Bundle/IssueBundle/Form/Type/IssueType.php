@@ -37,7 +37,7 @@ class IssueType extends AbstractType
                     'label'     => 'sbts.issue.issue_type.label',
                     'enum_code' => 'issue_type',
                     'configs'   => [
-                        'allowClear' => false,
+                        'allowClear' => true,
                     ]
                 ]
             )

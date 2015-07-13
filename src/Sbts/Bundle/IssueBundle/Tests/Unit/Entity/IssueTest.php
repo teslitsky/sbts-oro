@@ -56,6 +56,7 @@ class IssueTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(1));
 
         $this->assertCount(0, $this->entity->getRelated());
+        /** @var Issue $mock */
         $this->assertEquals($this->entity, $this->entity->addRelated($mock));
         $this->assertEquals(1, $this->entity->getRelated()->get(0)->getId());
 

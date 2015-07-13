@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\ActivityBundle\Manager\ActivityManager;
 use Oro\Bundle\EntityBundle\Tools\EntityRoutingHelper;
+use Oro\Bundle\EntityExtendBundle\Tools\ExtendHelper;
 use Oro\Bundle\FormBundle\Utils\FormUtils;
 
 use Sbts\Bundle\IssueBundle\Entity\Issue;
@@ -90,13 +91,6 @@ class IssueHandler
             $this->form->submit($this->request);
 
             if ($this->form->isValid()) {
-                if ($targetEntityClass && $action === 'activity') {
-                    $this->activityManager->addActivityTarget(
-                        $entity,
-                        $this->entityRoutingHelper->getEntityReference($targetEntityClass, $targetEntityId)
-                    );
-                }
-
                 $this->onSuccess($entity);
 
                 return true;
@@ -112,7 +106,13 @@ class IssueHandler
     protected function onSuccess(Issue $entity)
     {
         if (!$entity->getId() && $entity->getParent()) {
-            $entity->setType(Issue::TYPE_SUB_TASK);
+            $className = ExtendHelper::buildEnumValueClassName('issue_type');
+            $type = $this
+                ->manager
+                ->getRepository($className)
+                ->find(Issue::TYPE_SUB_TASK);
+
+            $entity->setIssueType($type);
         }
 
         $this->manager->persist($entity);

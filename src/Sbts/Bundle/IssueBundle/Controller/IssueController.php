@@ -31,7 +31,12 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/create", name="sbts_issue_create")
+     * @Route(
+     *      "/create/{id}",
+     *      name="sbts_issue_create",
+     *      requirements={"id"="\d+"},
+     *      defaults={"id"=null}
+     * )
      * @Acl(
      *      id="sbts_issue_create",
      *      type="entity",
@@ -40,16 +45,36 @@ class IssueController extends Controller
      * )
      * @Template("SbtsIssueBundle:Issue:update.html.twig")
      *
+     * @param int|null $id Parent issue id
      * @return RedirectResponse
      */
-    public function createAction()
+    public function createAction($id)
     {
         $issue = new Issue();
+
+        // Save issue like a sub-task if Id specified
+        if ($id) {
+            $parent = $this->getDoctrine()->getRepository('SbtsIssueBundle:Issue')->find($id);
+
+            if (!$parent) {
+                throw $this->createNotFoundException('Sbts\Bundle\IssueBundle\Entity\Issue not found.');
+            }
+
+            if (!$parent->isStory()) {
+                return $this->redirect($this->generateUrl('sbts_issue_view', ['id' => $id]));
+            }
+
+            $issue->setParent($parent);
+        }
 
         $issue->setReporter($this->getUser());
 
         $formAction = $this->get('oro_entity.routing_helper')
-            ->generateUrlByRequest('sbts_issue_create', $this->getRequest());
+            ->generateUrlByRequest(
+                'sbts_issue_create',
+                $this->getRequest(),
+                isset($parent) ? ['id' => $parent->getId()] : []
+            );
 
         return $this->update($issue, $formAction);
     }
