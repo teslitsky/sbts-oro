@@ -4,6 +4,7 @@ sbts:
         entity_label: Issue
         entity_plural_label: Issues
         create_entity: Create Issue
+        create_sub_task: Create sub-task
         owner:
             label: Assignee
         children:
