@@ -82,6 +82,8 @@ class Issue extends ExtendIssue
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=255, nullable=false, unique=true)
      */
     protected $code;
 
@@ -606,9 +608,24 @@ class Issue extends ExtendIssue
         return $this->organization;
     }
 
+    /**
+     * Checks if issue is story
+     *
+     * @return bool
+     */
     public function isStory()
     {
         return $this->getIssueType()->getId() === self::TYPE_STORY;
+    }
+
+    /**
+     * Checks if issue is sub-task
+     *
+     * @return bool
+     */
+    public function isSubTask()
+    {
+        return $this->getIssueType()->getId() === self::TYPE_SUB_TASK;
     }
 
     /**
@@ -626,6 +643,17 @@ class Issue extends ExtendIssue
     {
         $this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
+        $this->generateCode();
+    }
+
+    /**
+     * Generate issue code if not specified
+     */
+    public function generateCode()
+    {
+        if (!$this->getCode() && $this->getOrganization()) {
+            $this->setCode(sprintf('%s-%d', $this->getOrganization()->getName(), uniqid()));
+        }
     }
 
     /**

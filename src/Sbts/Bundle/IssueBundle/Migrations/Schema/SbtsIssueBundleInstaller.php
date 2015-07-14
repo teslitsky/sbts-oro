@@ -88,6 +88,7 @@ class SbtsIssueBundleInstaller implements
         $table = $schema->createTable(self::ISSUE_TABLE_NAME);
 
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
+        $table->addColumn('code', 'string', ['length' => 255]);
         $table->addColumn('parent_id', 'integer', ['notnull' => false]);
         $table->addColumn('reporter_id', 'integer', ['notnull' => false]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
@@ -100,6 +101,7 @@ class SbtsIssueBundleInstaller implements
         $table->addColumn('updated_at', 'datetime');
 
         $table->setPrimaryKey(['id']);
+        $table->addUniqueIndex(['code'], 'UNIQ_50ACC41277153098');
         $table->addIndex(['reporter_id'], 'idx_sbts_issue_reporter_id', []);
         $table->addIndex(['owner_id'], 'idx_sbts_issue_owner_id', []);
         $table->addIndex(['parent_id'], 'idx_sbts_issue_parent_id', []);
