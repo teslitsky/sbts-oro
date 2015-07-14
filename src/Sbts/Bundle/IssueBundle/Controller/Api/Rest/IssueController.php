@@ -151,7 +151,7 @@ class IssueController extends RestController implements ClassResourceInterface
      *      resource=true
      * )
      * @Acl(
-     *      id="sbts_issue_api_delete",
+     *      id="sbts_issue_delete",
      *      type="entity",
      *      class="SbtsIssueBundle:Issue",
      *      permission="DELETE"
