@@ -209,7 +209,6 @@ class Issue extends ExtendIssue implements Taggable
         $this->collaborators = new ArrayCollection();
         $this->related = new ArrayCollection();
         $this->children = new ArrayCollection();
-        $this->tags = new ArrayCollection();
     }
 
     /**
@@ -307,6 +306,10 @@ class Issue extends ExtendIssue implements Taggable
      */
     public function getTags()
     {
+        if (!$this->tags) {
+            $this->tags = new ArrayCollection();
+        }
+
         return $this->tags;
     }
 
