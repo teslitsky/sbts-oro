@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\UserBundle\Entity\User;
+use Oro\Bundle\WorkflowBundle\Entity\WorkflowItem;
+use Oro\Bundle\WorkflowBundle\Entity\WorkflowStep;
 
 use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
 
@@ -31,6 +33,10 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
  *          },
  *          "dataaudit"={
  *              "auditable"=true
+ *          },
+ *          "workflow"={
+ *              "active_workflow"="issue_flow",
+ *              "show_step_in_grid"=false
  *          },
  *          "security"={
  *              "type"="ACL"
@@ -156,6 +162,22 @@ class Issue extends ExtendIssue
      * @ORM\OneToMany(targetEntity="Issue", mappedBy="parent")
      */
     protected $children;
+
+    /**
+     * @var WorkflowItem
+     *
+     * @ORM\OneToOne(targetEntity="Oro\Bundle\WorkflowBundle\Entity\WorkflowItem")
+     * @ORM\JoinColumn(name="workflow_item_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $workflowItem;
+
+    /**
+     * @var WorkflowStep
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\WorkflowBundle\Entity\WorkflowStep")
+     * @ORM\JoinColumn(name="workflow_step_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $workflowStep;
 
     /**
      * @var \DateTime
@@ -441,6 +463,54 @@ class Issue extends ExtendIssue
     }
 
     /**
+     * Sets item workflow item
+     *
+     * @param WorkflowItem $workflowItem
+     *
+     * @return self
+     */
+    public function setWorkflowItem($workflowItem)
+    {
+        $this->workflowItem = $workflowItem;
+
+        return $this;
+    }
+
+    /**
+     * Gets item workflow item
+     *
+     * @return WorkflowItem
+     */
+    public function getWorkflowItem()
+    {
+        return $this->workflowItem;
+    }
+
+    /**
+     * Sets item workflow step
+     *
+     * @param WorkflowItem $workflowStep
+     *
+     * @return self
+     */
+    public function setWorkflowStep($workflowStep)
+    {
+        $this->workflowStep = $workflowStep;
+
+        return $this;
+    }
+
+    /**
+     * Sets item workflow step
+     *
+     * @return WorkflowStep
+     */
+    public function getWorkflowStep()
+    {
+        return $this->workflowStep;
+    }
+
+    /**
      * Sets created
      *
      * @param \DateTime $created
@@ -534,6 +604,11 @@ class Issue extends ExtendIssue
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    public function isStory()
+    {
+        return $this->getIssueType()->getId() === self::TYPE_STORY;
     }
 
     /**
