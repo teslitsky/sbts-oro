@@ -44,6 +44,7 @@
     {%- set issueInformation -%}
         <div class="row-fluid form-horizontal">
             <div class="responsive-block">
+                {{ UI.renderProperty('sbts.issue.code.label' | trans, entity.code) }}
                 {{ UI.renderProperty('sbts.issue.summary.label' | trans, entity.summary) }}
                 {{ UI.renderHtmlProperty('sbts.issue.description.label' | trans, entity.description | nl2br) }}
                 {{ UI.renderProperty('sbts.issue.issue_type.label' | trans, entity.issueType) }}

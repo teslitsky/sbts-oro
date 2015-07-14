@@ -677,7 +677,6 @@ class Issue extends ExtendIssue implements Taggable
     {
         $this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
-        $this->generateCode();
     }
 
     /**
@@ -686,7 +685,7 @@ class Issue extends ExtendIssue implements Taggable
     public function generateCode()
     {
         if (!$this->getCode() && $this->getOrganization()) {
-            $this->setCode(sprintf('%s-%d', $this->getOrganization()->getName(), uniqid()));
+            $this->setCode(sprintf('%s-%d', substr($this->getOrganization()->getName(), 0, 3), $this->getId()));
         }
     }
 

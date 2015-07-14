@@ -47,8 +47,6 @@ services:
         arguments:
             - %sbts.issue.entity.class%
             - @doctrine.orm.entity_manager
-        tags:
-            - { name: oro_tag.tag_manager }
 
     sbts.form.api:
         class: Symfony\Component\Form\Form

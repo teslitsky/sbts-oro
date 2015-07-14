@@ -6,6 +6,7 @@ datagrid:
             query:
                 select:
                     - issue.id
+                    - issue.code
                     - issue.summary
                     - issue.description
                     - CONCAT(reporter.firstName, CONCAT(' ', reporter.lastName)) as reporterName
@@ -32,8 +33,8 @@ datagrid:
                         - { join: issue.issue_resolution, alias: issueResolution }
                         - { join: issue.workflowStep, alias: workflowStep }
         columns:
-            id:
-                label:         sbts.issue.id.label
+            code:
+                label:         sbts.issue.code.label
             summary:
                 label:         sbts.issue.summary.label
             type:
@@ -71,8 +72,8 @@ datagrid:
                 frontend_type: datetime
         sorters:
             columns:
-                id:
-                    data_name: issue.id
+                code:
+                    data_name: issue.code
                 summary:
                     data_name: issue.summary
                 type:
@@ -95,6 +96,9 @@ datagrid:
                 updatedAt: DESC
         filters:
             columns:
+                code:
+                    type:      string
+                    data_name: issue.code
                 summary:
                     type:      string
                     data_name: issue.summary
