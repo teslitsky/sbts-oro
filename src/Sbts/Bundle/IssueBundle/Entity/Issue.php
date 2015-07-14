@@ -606,6 +606,11 @@ class Issue extends ExtendIssue
         return $this->organization;
     }
 
+    public function isStory()
+    {
+        return $this->getIssueType()->getId() === self::TYPE_STORY;
+    }
+
     /**
      * @ORM\PreUpdate()
      */
