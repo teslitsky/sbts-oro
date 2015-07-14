@@ -162,7 +162,7 @@ datagrid:
                 rowAction:     true
             delete:
                 type:          delete
-                acl_resource:  sbts_issue_api_delete
+                acl_resource:  sbts_issue_delete
                 label:         oro.grid.action.delete
                 icon:          trash
                 link:          delete_link
