@@ -1,0 +1,31 @@
+definitions:
+    issue_collaborators_definition:
+        label: 'Add collaborators on create and update issue'
+        enabled: true
+        entity: Sbts\Bundle\IssueBundle\Entity\Issue
+        order: 10
+        actions_configuration:
+            - @call_method:
+                conditions:
+                    @not_blank: [$reporter]
+                parameters:
+                    object: $.data
+                    method: addCollaborator
+                    method_parameters: [$reporter]
+            - @call_method:
+                conditions:
+                    @not_blank: [$owner]
+                parameters:
+                    object: $.data
+                    method: addCollaborator
+                    method_parameters: [$owner]
+
+triggers:
+    issue_collaborators_definition:
+        -
+            event: create
+            queued: false
+        -
+            event: update
+            field: owner
+            queued: false
