@@ -40,6 +40,11 @@ workflows:
                 options:
                     class: Extend\Entity\EV_Issue_Resolution
         transitions:
+            open_issue:
+                label: 'Open issue'
+                step_to: open
+                is_start: true
+                transition_definition: open_definition
             start_progress:
                 label: 'Start progress'
                 step_to: in_progress
@@ -88,6 +93,7 @@ workflows:
                 transition_definition: reopen_definition
 
         transition_definitions:
+            open_definition: ~
             start_progress_definition: ~
             stop_progress_definition: ~
             resolved_definition: ~
