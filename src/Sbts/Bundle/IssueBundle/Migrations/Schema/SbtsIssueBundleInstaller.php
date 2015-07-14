@@ -88,7 +88,7 @@ class SbtsIssueBundleInstaller implements
         $table = $schema->createTable(self::ISSUE_TABLE_NAME);
 
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
-        $table->addColumn('code', 'string', ['length' => 255]);
+        $table->addColumn('code', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('parent_id', 'integer', ['notnull' => false]);
         $table->addColumn('reporter_id', 'integer', ['notnull' => false]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);

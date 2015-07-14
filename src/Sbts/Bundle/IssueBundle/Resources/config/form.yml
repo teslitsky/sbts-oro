@@ -33,6 +33,8 @@ services:
             - @doctrine.orm.entity_manager
             - @oro_activity.manager
             - @oro_entity.routing_helper
+        tags:
+            - { name: oro_tag.tag_manager }
 
     sbts.form.type.issue_select:
         class: %sbts.form.type.issue_select.class%
@@ -45,6 +47,8 @@ services:
         arguments:
             - %sbts.issue.entity.class%
             - @doctrine.orm.entity_manager
+        tags:
+            - { name: oro_tag.tag_manager }
 
     sbts.form.api:
         class: Symfony\Component\Form\Form

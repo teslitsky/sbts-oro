@@ -78,6 +78,13 @@ class IssueType extends AbstractType
                     'required' => true,
                     'label'    => 'sbts.issue.assignee.label',
                 ]
+            )
+            ->add(
+                'tags',
+                'oro_tag_select',
+                [
+                    'label' => 'oro.tag.entity_plural_label',
+                ]
             );
     }
 
@@ -86,7 +93,11 @@ class IssueType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(['data_class' => 'Sbts\Bundle\IssueBundle\Entity\Issue']);
+        $resolver->setDefaults([
+            'data_class'         => 'Sbts\Bundle\IssueBundle\Entity\Issue',
+            'intention'          => 'issue',
+            'cascade_validation' => true,
+        ]);
     }
 
     /**

@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use Oro\Bundle\TagBundle\Entity\Tag;
+use Oro\Bundle\TagBundle\Entity\Taggable;
 use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\WorkflowBundle\Entity\WorkflowItem;
 use Oro\Bundle\WorkflowBundle\Entity\WorkflowStep;
@@ -48,7 +50,7 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
  *      }
  * )
  */
-class Issue extends ExtendIssue
+class Issue extends ExtendIssue implements Taggable
 {
     const PRIORITY_BLOCKER = 'blocker';
     const PRIORITY_CRITICAL = 'critical';
@@ -93,6 +95,11 @@ class Issue extends ExtendIssue
      * @ORM\Column(name="description", type="text")
      */
     protected $description;
+
+    /**
+     * @var Tag[]
+     */
+    protected $tags;
 
     /**
      * @var User
@@ -202,6 +209,7 @@ class Issue extends ExtendIssue
         $this->collaborators = new ArrayCollection();
         $this->related = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     /**
@@ -284,6 +292,32 @@ class Issue extends ExtendIssue
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTaggableId()
+    {
+        return $this->getId();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+
+        return $this;
     }
 
     /**

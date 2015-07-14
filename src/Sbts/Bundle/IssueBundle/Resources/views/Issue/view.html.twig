@@ -1,5 +1,6 @@
 {% extends 'OroUIBundle:actions:view.html.twig' %}
 {% import 'OroEntityConfigBundle::macros.html.twig' as entityConfig %}
+{% import 'OroTagBundle::macros.html.twig' as tag %}
 
 {% oro_title_set({params : {"%entity.code%": entity.code, "%entityName%": 'sbts.issue.entity_label' | trans }}) %}
 
@@ -79,6 +80,10 @@
             </div>
             <div class="responsive-block">
                 {{ entityConfig.renderDynamicFields(entity) }}
+
+                {% if resource_granted('oro_tag_view_tag_cloud') %}
+                    {{ UI.renderHtmlProperty('oro.tag.entity_plural_label' | trans, tag.renderView(entity)) }}
+                {% endif %}
             </div>
         </div>
         <div class="responsive-block">
