@@ -3,6 +3,7 @@ datagrid:
         extended_entity_name: %sbts.issue.entity.class%
         source:
             type: orm
+            acl_resource: sbts_issue_view
             query:
                 select:
                     - issue.id
@@ -170,4 +171,67 @@ datagrid:
                 label:         oro.grid.action.delete
                 icon:          trash
                 link:          delete_link
+                rowAction:     true
+
+    subtasks-grid:
+        extends: issues-grid
+        source:
+            query:
+                where:
+                    and:
+                        - issue.parent = :issue_id
+            bind_parameters:
+                - issue_id
+        columns:
+            typeLabel:
+                renderable: false
+        filters:
+            columns:
+                typeLabel:
+                    type:      enum
+                    data_name: typeId
+                    enum_code: issue_type
+                    enabled: false
+
+    collaborators-grid:
+        source:
+            type: orm
+            acl_resource: sbts_issue_view
+            query:
+                select:
+                    - collaborator.id
+                    - CONCAT(collaborator.firstName, CONCAT(' ', collaborator.lastName)) as collaboratorName
+                from:
+                    - { table: %sbts.issue.entity.class%, alias: issue }
+                join:
+                    inner:
+                        - { join: issue.collaborators , alias: collaborator }
+                where:
+                    and:
+                        - issue.id = :issue_id
+            bind_parameters:
+                - issue_id
+        columns:
+            collaboratorName:
+                label: sbts.issue.collaborator.label
+        sorters:
+            columns:
+                collaboratorName:
+                    data_name: collaboratorName
+            default:
+                collaboratorName: ASC
+        filters: ~
+        properties:
+            id: ~
+            view_link:
+                type:          url
+                route:         oro_user_view
+                params:        [ id ]
+        actions:
+            view:
+                type:          navigate
+                acl_resource:  oro_user_user_view
+                label:         oro.grid.action.view
+                icon:          eye-open
+                link:          view_link
                 rowAction:     true

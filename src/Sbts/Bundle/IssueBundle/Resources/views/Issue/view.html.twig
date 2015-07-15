@@ -117,10 +117,36 @@
             'title': 'General Information' | trans,
             'class': 'active',
             'subblocks': [{
-                'data' : [ issueInformation ]
+                'data': [ issueInformation ]
             }]
         }
     ] %}
+
+    {%- set collaboratorsGridBlock -%}
+        {{ dataGrid.renderGrid('collaborators-grid', {'issue_id': entity.id}) }}
+    {%- endset -%}
+
+    {% set collaboratorsBlock = [{
+        'title': 'sbts.issue.collaborator.plural_label' | trans,
+        'class': 'active',
+        'subblocks': [
+            {'data': [ collaboratorsGridBlock ] }
+        ]
+    }] %}
+
+    {% set dataBlocks = dataBlocks | merge(collaboratorsBlock) %}
+
+    {% if entity.isStory() %}
+        {% set subtasksBlock = [{
+            'title': 'sbts.issue.sub_task.plural_label' | trans,
+            'class': 'active',
+            'subblocks': [
+                {'data' : [ dataGrid.renderGrid('subtasks-grid', {'issue_id': entity.id}) ] }
+            ]
+        }] %}
+
+        {% set dataBlocks = dataBlocks | merge(subtasksBlock) %}
+    {% endif %}
 
     {% set id = 'issueView' %}
     {% set data = { 'dataBlocks': dataBlocks } %}
