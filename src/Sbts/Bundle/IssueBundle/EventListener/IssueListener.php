@@ -50,6 +50,20 @@ class IssueListener
     }
 
     /**
+     * Set Issue code based on Id and Organization
+     *
+     * @param LifecycleEventArgs $args
+     */
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof Issue) {
+            $entity->generateCode();
+        }
+    }
+
+    /**
      * @param OnFlushEventArgs $args
      */
     public function onFlush(OnFlushEventArgs $args)

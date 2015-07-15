@@ -33,6 +33,19 @@ sbts:
             label: Summary
         status:
             label: Status
+        collaborator:
+            label: Collaborator
+            plural_label: Collaborators
+        related_issue:
+            label: Related issue
+            plural_label: Related issues
+        sub_task:
+            label: Sub-task
+            plural_label: Sub-tasks
+        link:
+            label: Link issue
+        unlink:
+            label: Unlink issue
 
         controller:
             message:

@@ -11,10 +11,12 @@ use Oro\Bundle\ActivityBundle\Manager\ActivityManager;
 use Oro\Bundle\EntityBundle\Tools\EntityRoutingHelper;
 use Oro\Bundle\EntityExtendBundle\Tools\ExtendHelper;
 use Oro\Bundle\FormBundle\Utils\FormUtils;
+use Oro\Bundle\TagBundle\Entity\TagManager;
+use Oro\Bundle\TagBundle\Form\Handler\TagHandlerInterface;
 
 use Sbts\Bundle\IssueBundle\Entity\Issue;
 
-class IssueHandler
+class IssueHandler implements TagHandlerInterface
 {
     /**
      * @var FormInterface
@@ -40,6 +42,11 @@ class IssueHandler
      * @var EntityRoutingHelper
      */
     protected $entityRoutingHelper;
+
+    /**
+     * @var TagManager
+     */
+    protected $tagManager;
 
     /**
      * @param FormInterface       $form
@@ -117,6 +124,18 @@ class IssueHandler
 
         $this->manager->persist($entity);
         $this->manager->flush();
+
+        if ($this->tagManager) {
+            $this->tagManager->saveTagging($entity);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTagManager(TagManager $tagManager)
+    {
+        $this->tagManager = $tagManager;
     }
 
     /**

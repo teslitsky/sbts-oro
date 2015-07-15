@@ -40,38 +40,6 @@ class IssueControllerTest extends WebTestCase
     /**
      * @depends testCreate
      */
-    public function testCreateSubTask()
-    {
-        $response = $this->client->requestGrid(
-            'issues-grid',
-            ['issues-grid[_filter][summary][value]' => 'Test issue']
-        );
-
-        $result = $this->getJsonResponseContent($response, 200);
-        $result = reset($result['data']);
-
-        $crawler = $this->client->request(
-            'GET',
-            $this->getUrl('sbts_issue_create', ['id' => $result['id']])
-        );
-
-        $form = $crawler->selectButton('Save and Close')->form();
-        $form['sbts_form[summary]'] = 'New sub-task';
-        $form['sbts_form[description]'] = 'New description';
-        $form['sbts_form[issue_priority]'] = Issue::PRIORITY_MAJOR;
-        $form['sbts_form[owner]'] = '1';
-
-        $this->client->followRedirects(true);
-        $crawler = $this->client->submit($form);
-        $result = $this->client->getResponse();
-
-        $this->assertHtmlResponseStatusCodeEquals($result, 200);
-        $this->assertContains('Issue has been saved', $crawler->html());
-    }
-
-    /**
-     * @depends testCreate
-     */
     public function testUpdate()
     {
         $response = $this->client->requestGrid(
@@ -93,6 +61,39 @@ class IssueControllerTest extends WebTestCase
         $form = $crawler->selectButton('Save and Close')->form();
         $form['sbts_issue[summary]'] = 'Issue updated summary';
         $form['sbts_issue[description]'] = 'Description updated';
+        $form['sbts_issue[issue_type]'] = Issue::TYPE_STORY;
+
+        $this->client->followRedirects(true);
+        $crawler = $this->client->submit($form);
+        $result = $this->client->getResponse();
+
+        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+        $this->assertContains('Issue has been saved', $crawler->html());
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testCreateSubTask()
+    {
+        $response = $this->client->requestGrid(
+            'issues-grid',
+            ['issues-grid[_filter][summary][value]' => 'Issue updated summary']
+        );
+
+        $result = $this->getJsonResponseContent($response, 200);
+        $result = reset($result['data']);
+
+        $crawler = $this->client->request(
+            'GET',
+            $this->getUrl('sbts_issue_create', ['id' => $result['id']])
+        );
+
+        $form = $crawler->selectButton('Save and Close')->form();
+        $form['sbts_issue[summary]'] = 'New sub-task';
+        $form['sbts_issue[description]'] = 'New description';
+        $form['sbts_issue[issue_priority]'] = Issue::PRIORITY_MAJOR;
+        $form['sbts_issue[owner]'] = '1';
 
         $this->client->followRedirects(true);
         $crawler = $this->client->submit($form);

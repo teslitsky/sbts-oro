@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use Oro\Bundle\TagBundle\Entity\Tag;
+use Oro\Bundle\TagBundle\Entity\Taggable;
 use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\WorkflowBundle\Entity\WorkflowItem;
 use Oro\Bundle\WorkflowBundle\Entity\WorkflowStep;
@@ -48,7 +50,7 @@ use Sbts\Bundle\IssueBundle\Model\ExtendIssue;
  *      }
  * )
  */
-class Issue extends ExtendIssue
+class Issue extends ExtendIssue implements Taggable
 {
     const PRIORITY_BLOCKER = 'blocker';
     const PRIORITY_CRITICAL = 'critical';
@@ -82,6 +84,8 @@ class Issue extends ExtendIssue
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=255, nullable=false, unique=true)
      */
     protected $code;
 
@@ -91,6 +95,11 @@ class Issue extends ExtendIssue
      * @ORM\Column(name="description", type="text")
      */
     protected $description;
+
+    /**
+     * @var Tag[]
+     */
+    protected $tags;
 
     /**
      * @var User
@@ -282,6 +291,36 @@ class Issue extends ExtendIssue
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTaggableId()
+    {
+        return $this->getId();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTags()
+    {
+        if (!$this->tags) {
+            $this->tags = new ArrayCollection();
+        }
+
+        return $this->tags;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+
+        return $this;
     }
 
     /**
@@ -606,9 +645,24 @@ class Issue extends ExtendIssue
         return $this->organization;
     }
 
+    /**
+     * Checks if issue is story
+     *
+     * @return bool
+     */
     public function isStory()
     {
         return $this->getIssueType()->getId() === self::TYPE_STORY;
+    }
+
+    /**
+     * Checks if issue is sub-task
+     *
+     * @return bool
+     */
+    public function isSubTask()
+    {
+        return $this->getIssueType()->getId() === self::TYPE_SUB_TASK;
     }
 
     /**
@@ -626,6 +680,16 @@ class Issue extends ExtendIssue
     {
         $this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * Generate issue code if not specified
+     */
+    public function generateCode()
+    {
+        if (!$this->getCode() && $this->getOrganization()) {
+            $this->setCode(sprintf('%s-%d', substr($this->getOrganization()->getName(), 0, 3), $this->getId()));
+        }
     }
 
     /**

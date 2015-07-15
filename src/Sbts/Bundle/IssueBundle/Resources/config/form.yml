@@ -33,6 +33,8 @@ services:
             - @doctrine.orm.entity_manager
             - @oro_activity.manager
             - @oro_entity.routing_helper
+        tags:
+            - { name: oro_tag.tag_manager }
 
     sbts.form.type.issue_select:
         class: %sbts.form.type.issue_select.class%

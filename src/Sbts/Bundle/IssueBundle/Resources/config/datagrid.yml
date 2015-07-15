@@ -3,9 +3,11 @@ datagrid:
         extended_entity_name: %sbts.issue.entity.class%
         source:
             type: orm
+            acl_resource: sbts_issue_view
             query:
                 select:
                     - issue.id
+                    - issue.code
                     - issue.summary
                     - issue.description
                     - CONCAT(reporter.firstName, CONCAT(' ', reporter.lastName)) as reporterName
@@ -32,8 +34,8 @@ datagrid:
                         - { join: issue.issue_resolution, alias: issueResolution }
                         - { join: issue.workflowStep, alias: workflowStep }
         columns:
-            id:
-                label:         sbts.issue.id.label
+            code:
+                label:         sbts.issue.code.label
             summary:
                 label:         sbts.issue.summary.label
             type:
@@ -71,8 +73,8 @@ datagrid:
                 frontend_type: datetime
         sorters:
             columns:
-                id:
-                    data_name: issue.id
+                code:
+                    data_name: issue.code
                 summary:
                     data_name: issue.summary
                 type:
@@ -95,6 +97,9 @@ datagrid:
                 updatedAt: DESC
         filters:
             columns:
+                code:
+                    type:      string
+                    data_name: issue.code
                 summary:
                     type:      string
                     data_name: issue.summary
@@ -166,4 +171,67 @@ datagrid:
                 label:         oro.grid.action.delete
                 icon:          trash
                 link:          delete_link
+                rowAction:     true
+
+    subtasks-grid:
+        extends: issues-grid
+        source:
+            query:
+                where:
+                    and:
+                        - issue.parent = :issue_id
+            bind_parameters:
+                - issue_id
+        columns:
+            typeLabel:
+                renderable: false
+        filters:
+            columns:
+                typeLabel:
+                    type:      enum
+                    data_name: typeId
+                    enum_code: issue_type
+                    enabled: false
+
+    collaborators-grid:
+        source:
+            type: orm
+            acl_resource: sbts_issue_view
+            query:
+                select:
+                    - collaborator.id
+                    - CONCAT(collaborator.firstName, CONCAT(' ', collaborator.lastName)) as collaboratorName
+                from:
+                    - { table: %sbts.issue.entity.class%, alias: issue }
+                join:
+                    inner:
+                        - { join: issue.collaborators , alias: collaborator }
+                where:
+                    and:
+                        - issue.id = :issue_id
+            bind_parameters:
+                - issue_id
+        columns:
+            collaboratorName:
+                label: sbts.issue.collaborator.label
+        sorters:
+            columns:
+                collaboratorName:
+                    data_name: collaboratorName
+            default:
+                collaboratorName: ASC
+        filters: ~
+        properties:
+            id: ~
+            view_link:
+                type:          url
+                route:         oro_user_view
+                params:        [ id ]
+        actions:
+            view:
+                type:          navigate
+                acl_resource:  oro_user_user_view
+                label:         oro.grid.action.view
+                icon:          eye-open
+                link:          view_link
                 rowAction:     true
