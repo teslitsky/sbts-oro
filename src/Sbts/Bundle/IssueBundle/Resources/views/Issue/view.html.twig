@@ -1,4 +1,6 @@
-{% extends 'OroUIBundle:actions:view.html.twig' %}
+{% extends 'OroUIBundle:actions:view.html.twig'%}
+{% import 'OroUIBundle::macros.html.twig' as UI %}
+{% import 'OroDataGridBundle::macros.html.twig' as dataGrid %}
 {% import 'OroEntityConfigBundle::macros.html.twig' as entityConfig %}
 {% import 'OroTagBundle::macros.html.twig' as tag %}
 
@@ -37,6 +39,14 @@
         'entityTitle': entity.code ~ ' ' ~ entity.summary
     } %}
 
+    {% if entity.parent %}
+        {% set breadcrumbs = breadcrumbs | merge({'additional': [{
+        'entity': entity.parent,
+        'indexPath': path('sbts_issue_view', { 'id': entity.parent.id }),
+        'indexLabel': entity.parent.code
+        }]}) %}
+    {% endif %}
+
     {{ parent() }}
 {% endblock pageHeader %}
 
@@ -44,12 +54,25 @@
     {%- set issueInformation -%}
         <div class="row-fluid form-horizontal">
             <div class="responsive-block">
+                {% if entity.isSubTask() %}
+                    {{ UI.renderHtmlProperty(
+                        'sbts.issue.parent.label' | trans,
+                        entity.parent
+                            ? UI.link({
+                                'path': path('sbts_issue_view', {'id': entity.parent.id}),
+                                'label': entity.parent.code
+                            })
+                            : 'N/A'
+                    ) }}
+                {% endif %}
+
                 {{ UI.renderProperty('sbts.issue.code.label' | trans, entity.code) }}
                 {{ UI.renderProperty('sbts.issue.summary.label' | trans, entity.summary) }}
                 {{ UI.renderHtmlProperty('sbts.issue.description.label' | trans, entity.description | nl2br) }}
                 {{ UI.renderProperty('sbts.issue.issue_type.label' | trans, entity.issueType) }}
                 {{ UI.renderProperty('sbts.issue.issue_priority.label' | trans, entity.issuePriority) }}
                 {{ UI.renderProperty('sbts.issue.issue_resolution.label' | trans, entity.issueResolution) }}
+                {{ UI.renderProperty('sbts.issue.status.label' | trans, entity.workflowStep ? entity.workflowStep.label : 'N/A') }}
                 {{ UI.renderProperty('sbts.issue.created_at.label' | trans, entity.createdAt | oro_format_datetime) }}
                 {{ UI.renderProperty('sbts.issue.updated_at.label' | trans, entity.updatedAt | oro_format_datetime) }}
 
@@ -86,9 +109,6 @@
                     {{ UI.renderHtmlProperty('oro.tag.entity_plural_label' | trans, tag.renderView(entity)) }}
                 {% endif %}
             </div>
-        </div>
-        <div class="responsive-block">
-            {{ entityConfig.renderDynamicFields(entity) }}
         </div>
     {%- endset -%}
 
