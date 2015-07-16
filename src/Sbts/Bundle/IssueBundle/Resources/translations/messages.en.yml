@@ -3,7 +3,10 @@ sbts:
     issue:
         entity_label: Issue
         entity_plural_label: Issues
-        create_entity: Create Issue
+        create_entity:
+            label: Create Issue
+            for_user: Create an Issue for this user
+            widget_title: Create Issue for %username%
         create_sub_task: Create sub-task
         owner:
             label: Assignee
@@ -46,6 +49,8 @@ sbts:
             label: Link issue
         unlink:
             label: Unlink issue
+        user_issues:
+            label: User Issues
 
         controller:
             message:

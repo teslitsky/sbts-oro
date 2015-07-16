@@ -94,6 +94,24 @@ class IssueController extends Controller
     }
 
     /**
+     * @Route(
+     *      "/user/{userId}",
+     *      name="sbts_issue_user_issues",
+     *      requirements={"userId"="\d+"}
+     * )
+     * @AclAncestor("sbts_issue_view")
+     * @Template
+     *
+     * @param int $userId
+     *
+     * @return array
+     */
+    public function userIssuesAction($userId)
+    {
+        return ['userId' => $userId];
+    }
+
+    /**
      * @Route("/update/{id}", name="sbts_issue_update", requirements={"id"="\d+"})
      * @Acl(
      *      id="sbts_issue_update",

@@ -7,7 +7,7 @@ oro_menu_config:
             label: sbts.issue.entity_plural_label
             route: sbts_issue_index
         sbts_create_issue_link:
-            label: sbts.issue.create_entity
+            label: sbts.issue.create_entity.label
             route: sbts_issue_create
     tree:
         application_menu:
