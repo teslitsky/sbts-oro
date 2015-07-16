@@ -5,6 +5,13 @@
 {% set gridName = 'issues-grid' %}
 
 {% block navButtons %}
+    {% include 'OroImportExportBundle:ImportExport:buttons.html.twig' with {
+        entity_class: entity_class,
+        importProcessor: 'sbts',
+        exportProcessor: 'sbts',
+        exportTemplateProcessor: 'sbts',
+        dataGridName: gridName
+    } %}
     {% if resource_granted('sbts_issue_create') %}
         {{ UI.addButton({
             'path': path('sbts_issue_create'),

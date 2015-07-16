@@ -40,12 +40,6 @@ class IssueFixture extends AbstractTemplateRepository implements TemplateFixture
      */
     public function fillEntityData($key, $entity)
     {
-        $issueTypeRepo = $this->templateManager
-            ->getEntityRepository(ExtendHelper::buildEnumValueClassName('issue_type'));
-        $issuePriorityRepo = $this->templateManager
-            ->getEntityRepository(ExtendHelper::buildEnumValueClassName('issue_priority'));
-        $issueResolutionRepo = $this->templateManager
-            ->getEntityRepository(ExtendHelper::buildEnumValueClassName('issue_resolution'));
         $userRepo = $this->templateManager
             ->getEntityRepository('Oro\Bundle\UserBundle\Entity\User');
         $organizationRepo = $this->templateManager
@@ -57,12 +51,11 @@ class IssueFixture extends AbstractTemplateRepository implements TemplateFixture
                     ->setCode('SBTS-1')
                     ->setSummary($key)
                     ->setDescription('Story description')
-                    ->setIssueType($issueTypeRepo->getEntity(Issue::TYPE_STORY))
-                    ->setIssuePriority($issuePriorityRepo->getEntity(Issue::PRIORITY_MAJOR))
-                    ->setIssueResolution($issueResolutionRepo->getEntity(Issue::RESOLUTION_FIXED))
-                    ->setReporter($userRepo->getEntity('John Doe'))
-                    ->setOwner($userRepo->getEntity('John Doe'))
-                    ->setParent(null)
+                    ->setIssueType(Issue::TYPE_STORY)
+                    ->setIssuePriority(Issue::PRIORITY_MAJOR)
+                    ->setIssueResolution(Issue::RESOLUTION_FIXED)
+                    ->setReporter($userRepo->getEntity('John Doo'))
+                    ->setOwner($userRepo->getEntity('John Doo'))
                     ->setCreatedAt(new \DateTime('now', new \DateTimeZone('UTC')))
                     ->setUpdatedAt(new \DateTime('now', new \DateTimeZone('UTC')))
                     ->setOrganization($organizationRepo->getEntity('default'));
@@ -74,11 +67,11 @@ class IssueFixture extends AbstractTemplateRepository implements TemplateFixture
                     ->setCode('SBTS-2')
                     ->setSummary($key)
                     ->setDescription('Sub-task description')
-                    ->setIssueType($issueTypeRepo->getEntity(Issue::TYPE_SUB_TASK))
-                    ->setIssuePriority($issuePriorityRepo->getEntity(Issue::PRIORITY_MAJOR))
-                    ->setIssueResolution($issueResolutionRepo->getEntity(Issue::RESOLUTION_FIXED))
-                    ->setReporter($userRepo->getEntity('John Doe'))
-                    ->setOwner($userRepo->getEntity('John Doe'))
+                    ->setIssueType(Issue::TYPE_SUB_TASK)
+                    ->setIssuePriority(Issue::PRIORITY_MAJOR)
+                    ->setIssueResolution(Issue::RESOLUTION_FIXED)
+                    ->setReporter($userRepo->getEntity('John Doo'))
+                    ->setOwner($userRepo->getEntity('John Doo'))
                     ->setParent($this->getEntity('Story Issue'))
                     ->setCreatedAt(new \DateTime('now', new \DateTimeZone('UTC')))
                     ->setUpdatedAt(new \DateTime('now', new \DateTimeZone('UTC')))

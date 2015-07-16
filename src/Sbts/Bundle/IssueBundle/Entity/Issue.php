@@ -76,7 +76,8 @@ class Issue extends ExtendIssue implements Taggable
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
-     *              "excluded"=true
+     *              "order"=5,
+     *              "header"="Id"
      *          }
      *      }
      * )
