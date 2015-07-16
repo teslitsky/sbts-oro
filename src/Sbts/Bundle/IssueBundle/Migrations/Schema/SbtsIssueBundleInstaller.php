@@ -5,6 +5,7 @@ namespace Sbts\Bundle\IssueBundle\Migrations\Schema;
 use Doctrine\DBAL\Schema\Schema;
 
 use Oro\Bundle\ActivityBundle\Migration\Extension\ActivityExtension;
+use Oro\Bundle\ActivityBundle\Migration\Extension\ActivityExtensionAwareInterface;
 use Oro\Bundle\EntityExtendBundle\Migration\Extension\ExtendExtension;
 use Oro\Bundle\EntityExtendBundle\Migration\Extension\ExtendExtensionAwareInterface;
 use Oro\Bundle\MigrationBundle\Migration\Installation;
@@ -19,7 +20,8 @@ use Oro\Bundle\NoteBundle\Migration\Extension\NoteExtensionAwareInterface;
 class SbtsIssueBundleInstaller implements
     Installation,
     ExtendExtensionAwareInterface,
-    NoteExtensionAwareInterface
+    NoteExtensionAwareInterface,
+    ActivityExtensionAwareInterface
 {
     const ISSUE_TABLE_NAME = 'sbts_issue';
     const USER_TABLE_NAME = 'oro_user';
