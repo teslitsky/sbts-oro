@@ -1,0 +1,19 @@
+{% extends 'OroSearchBundle:Search:searchResultItem.html.twig' %}
+
+{% set showImage = false %}
+
+{% set recordUrl = indexer_item.recordUrl %}
+{% set title = entity ? entity.code ~ ' / ' ~ entity.summary : indexer_item.recordTitle %}
+
+{% set entityType = 'sbts.issue.entity_label' | trans %}
+
+{% set entityInfo = [
+    { 'title': 'sbts.issue.issue_type.label' | trans, 'value': entity.getIssueType().getName() },
+    { 'title': 'sbts.issue.issue_priority.label' | trans, 'value': entity.getIssuePriority().getName() },
+    { 'title': 'sbts.issue.issue_resolution.label' | trans, 'value': entity.getIssueResolution() ? entity.getIssueResolution().getName() : 'N/A' },
+    { 'title': 'sbts.issue.status.label' | trans, 'value': entity.workflowStep.label },
+    { 'title': 'sbts.issue.reporter.label' | trans, 'value': entity.reporter },
+    { 'title': 'sbts.issue.owner.label' | trans, 'value': entity.owner },
+    { 'title': 'oro.ui.created_at' | trans, 'value': entity.createdAt | oro_format_datetime },
+    { 'title': 'oro.ui.updated_at' | trans, 'value': entity.updatedAt | oro_format_datetime },
+] %}
