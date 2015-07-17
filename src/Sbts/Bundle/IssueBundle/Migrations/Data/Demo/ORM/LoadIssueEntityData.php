@@ -205,24 +205,15 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
             $this->workflowManager->transit($workflowItem, $nextStep);
             $stepName = $workflowItem->getCurrentStep()->getName();
 
-            if (in_array($stepName, ['resolved', 'closed'])) {
-                $issueResolutionRepoClass = ExtendHelper::buildEnumValueClassName('issue_resolution');
-                $issue->setIssueResolution(
-                    $this->em->getRepository($issueResolutionRepoClass)->find($this->getRandomResolution())
-                );
-            }
-        }
-    }
+            $issueResolutionRepoClass = ExtendHelper::buildEnumValueClassName('issue_resolution');
+            $resolution = $this->em->getRepository($issueResolutionRepoClass)->find(Issue::RESOLUTION_UNRESOLVED);
 
-    /**
-     * @return string
-     */
-    protected function getRandomResolution()
-    {
-        return array_rand([
-            Issue::RESOLUTION_FIXED,
-            Issue::RESOLUTION_UNRESOLVED,
-        ]);
+            if (in_array($stepName, ['resolved', 'closed'])) {
+                $resolution = $this->em->getRepository($issueResolutionRepoClass)->find(Issue::RESOLUTION_FIXED);
+            }
+
+            $issue->setIssueResolution($resolution);
+        }
     }
 
     /**
