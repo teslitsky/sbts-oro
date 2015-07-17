@@ -35,19 +35,27 @@
     {% set dataBlocks = [{
         'title': 'General Information' | trans,
         'class': 'active',
-        'subblocks': [{
-        'title': '',
-        'data': [
-            form_row(form.summary),
-            form_row(form.issue_type),
-            form_row(form.issue_priority),
-            form_row(form.issue_resolution),
-            form.reporter is defined ? form_row(form.reporter) : '',
-            form.assignee is defined ? form_row(form.owner) : '',
-            form_row(form.description),
-            form_row(form.tags)
+        'subblocks': [
+            {
+                'title': '',
+                'data': [
+                    form_row(form.summary),
+                    (entity.parent or entity.isSubTask()) ? '' : form_row(form.issue_type),
+                    form_row(form.issue_priority),
+                    form.issue_priority is defined ? form_row(form.issue_priority) : '',
+                    form.reporter is defined ? form_row(form.reporter) : '',
+                    form.owner is defined ? form_row(form.owner) : '',
+                    form_row(form.description),
+                    form_row(form.tags)
+                ]
+            },
+            {
+                'title': '',
+                'data': [
+                    form_row(form.tags)
+                ]
+            }
         ]
-        }]
     }] %}
 
     {% set additionalData = [] %}

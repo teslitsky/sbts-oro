@@ -113,13 +113,19 @@ class IssueHandler implements TagHandlerInterface
     protected function onSuccess(Issue $entity)
     {
         if (!$entity->getId() && $entity->getParent()) {
-            $className = ExtendHelper::buildEnumValueClassName('issue_type');
             $type = $this
                 ->manager
-                ->getRepository($className)
+                ->getRepository(ExtendHelper::buildEnumValueClassName('issue_type'))
                 ->find(Issue::TYPE_SUB_TASK);
-
             $entity->setIssueType($type);
+        }
+
+        if (!$entity->getId()) {
+            $resolution = $this
+                ->manager
+                ->getRepository(ExtendHelper::buildEnumValueClassName('issue_resolution'))
+                ->find(Issue::RESOLUTION_UNRESOLVED);
+            $entity->setIssueResolution($resolution);
         }
 
         $this->manager->persist($entity);
