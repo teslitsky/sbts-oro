@@ -3,8 +3,6 @@
 namespace Sbts\Bundle\IssueBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -61,21 +59,5 @@ class IssueListener
         if ($entity instanceof Issue) {
             $entity->generateCode();
         }
-    }
-
-    /**
-     * @param OnFlushEventArgs $args
-     */
-    public function onFlush(OnFlushEventArgs $args)
-    {
-
-    }
-
-    /**
-     * @param PostFlushEventArgs $args
-     */
-    public function postFlush(PostFlushEventArgs $args)
-    {
-
     }
 }
