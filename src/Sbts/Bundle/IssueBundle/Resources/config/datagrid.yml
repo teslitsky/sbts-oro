@@ -235,3 +235,21 @@ datagrid:
                 icon:          eye-open
                 link:          view_link
                 rowAction:     true
+
+    user-issues-grid:
+        extends: issues-grid
+        source:
+            query:
+                where:
+                    or:
+                        - issue.owner = :userId
+                        - issue.reporter = :userId
+            bind_parameters:
+                - userId
+        filters: ~
+        options:
+            toolbarOptions:
+                hide: true
+                pageSize:
+                    items: [10]
+                    default_per_page: 10
