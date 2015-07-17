@@ -1,0 +1,92 @@
+Sbts\Bundle\IssueBundle\Entity\Issue:
+    alias: sbts_issue
+    search_template: SbtsIssueBundle:Search:result.html.twig
+    label: sbts.issue.entity_plural_label
+    route:
+        name: sbts_issue_view
+        parameters:
+            id: id
+    title_fields: [code, summary]
+
+    fields:
+        -
+            name: code
+            target_type: text
+            target_fields: [code]
+        -
+            name: summary
+            target_type: text
+            target_fields: [summary, description]
+        -
+            name: issue_type
+            relation_type: many-to-one
+            relation_fields:
+                -
+                    name: name
+                    target_type: text
+                    target_fields: [name, all_data]
+                -
+                    name: id
+                    target_type: text
+                    target_fields: [issue_type]
+        -
+            name: issue_priority
+            relation_type: many-to-one
+            relation_fields:
+                -
+                    name: name
+                    target_type: text
+                    target_fields: [name, all_data]
+                -
+                    name: id
+                    target_type: text
+                    target_fields: [issue_priority]
+        -
+            name: issue_resolution
+            relation_type: many-to-one
+            relation_fields:
+                -
+                    name: name
+                    target_type: text
+                    target_fields: [name, all_data]
+                -
+                    name: id
+                    target_type: text
+                    target_fields: [issue_resolution]
+        -
+            name: workflowStep
+            relation_type: many-to-one
+            relation_fields:
+                -
+                    name: label
+                    target_type: text
+                    target_fields: [label, all_data]
+                -
+                    name: id
+                    target_type: integer
+                    target_fields: [workflowStep]
+
+        -
+            name: reporter
+            relation_type: many-to-one
+            relation_fields:
+                -
+                    name: username
+                    target_type: text
+                    target_fields: [username, all_data]
+                -
+                    name: id
+                    target_type: integer
+                    target_fields: [reporter]
+        -
+            name: owner
+            relation_type: many-to-one
+            relation_fields:
+                -
+                    name: username
+                    target_type: text
+                    target_fields: [username, all_data]
+                -
+                    name: id
+                    target_type: integer
+                    target_fields: [owner]

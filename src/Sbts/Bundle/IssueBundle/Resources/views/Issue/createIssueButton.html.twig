@@ -1,0 +1,25 @@
+{% import 'OroUIBundle::macros.html.twig' as UI %}
+
+{{ UI.clientButton({
+    'dataUrl': path('sbts_issue_create', oro_action_params(entity, 'assign')),
+    'aCss': 'no-hash btn-primary',
+    'dataId': entity.id,
+    'label': 'sbts.issue.create_entity.label' | trans,
+    'title': 'sbts.issue.create_entity.for_user' | trans,
+    'widget' : {
+        'type' : 'dialog',
+        'multiple' : false,
+        'reload-grid-name' : 'user-issues-grid',
+        'options' : {
+            'alias': 'create-issue-dialog',
+            'dialogOptions' : {
+                'title' : 'sbts.issue.create_entity.widget_title' | trans({ '%username%': entity | oro_format_name }),
+                'allowMaximize': true,
+                'allowMinimize': true,
+                'dblclick': 'maximize',
+                'maximizedHeightDecreaseBy': 'minimize-bar',
+                'width': 1000
+            }
+        }
+    }
+}) }}

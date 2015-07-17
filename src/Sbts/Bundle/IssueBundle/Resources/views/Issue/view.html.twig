@@ -1,0 +1,155 @@
+{% extends 'OroUIBundle:actions:view.html.twig'%}
+{% import 'OroUIBundle::macros.html.twig' as UI %}
+{% import 'OroDataGridBundle::macros.html.twig' as dataGrid %}
+{% import 'OroEntityConfigBundle::macros.html.twig' as entityConfig %}
+{% import 'OroTagBundle::macros.html.twig' as tag %}
+
+{% oro_title_set({params : {"%entity.code%": entity.code, "%entityName%": 'sbts.issue.entity_label' | trans }}) %}
+
+{% block navButtons %}
+    {% if resource_granted('CREATE', entity) and entity.isStory() %}
+        {{ UI.editButton({
+            'path' : path('sbts_issue_create', { id: entity.id }),
+            'label': 'sbts.issue.create_sub_task' | trans
+        }) }}
+    {% endif %}
+    {% if resource_granted('EDIT', entity) %}
+        {{ UI.editButton({
+            'path' : path('sbts_issue_update', { id: entity.id }),
+            'entity_label': 'sbts.issue.entity_label' | trans
+        }) }}
+    {% endif %}
+    {% if resource_granted('DELETE', entity) %}
+        {{ UI.deleteButton({
+            'dataUrl': path('sbts_api_delete_issue', {'id': entity.id}),
+            'dataRedirect': path('sbts_issue_index'),
+            'aCss': 'no-hash remove-button',
+            'id': 'btn-remove-issue',
+            'dataId': entity.id,
+            'entity_label': 'sbts.issue.entity_label' | trans
+        }) }}
+    {% endif %}
+{% endblock navButtons %}
+
+{% block pageHeader %}
+    {% set breadcrumbs = {
+        'entity': entity,
+        'indexPath': path('sbts_issue_index'),
+        'indexLabel': 'sbts.issue.entity_plural_label' | trans,
+        'entityTitle': entity.code ~ ' ' ~ entity.summary
+    } %}
+
+    {% if entity.parent %}
+        {% set breadcrumbs = breadcrumbs | merge({'additional': [{
+        'entity': entity.parent,
+        'indexPath': path('sbts_issue_view', { 'id': entity.parent.id }),
+        'indexLabel': entity.parent.code
+        }]}) %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock pageHeader %}
+
+{% block content_data %}
+    {%- set issueInformation -%}
+        <div class="row-fluid form-horizontal">
+            <div class="responsive-block">
+                {% if entity.isSubTask() %}
+                    {{ UI.renderHtmlProperty(
+                        'sbts.issue.parent.label' | trans,
+                        entity.parent
+                            ? UI.link({
+                                'path': path('sbts_issue_view', {'id': entity.parent.id}),
+                                'label': entity.parent.code
+                            })
+                            : 'N/A'
+                    ) }}
+                {% endif %}
+
+                {{ UI.renderProperty('sbts.issue.code.label' | trans, entity.code) }}
+                {{ UI.renderProperty('sbts.issue.summary.label' | trans, entity.summary) }}
+                {{ UI.renderHtmlProperty('sbts.issue.description.label' | trans, entity.description | nl2br) }}
+                {{ UI.renderProperty('sbts.issue.issue_type.label' | trans, entity.issueType) }}
+                {{ UI.renderProperty('sbts.issue.issue_priority.label' | trans, entity.issuePriority) }}
+                {{ UI.renderProperty('sbts.issue.issue_resolution.label' | trans, entity.issueResolution) }}
+                {{ UI.renderProperty('sbts.issue.status.label' | trans, entity.workflowStep ? entity.workflowStep.label : 'N/A') }}
+                {{ UI.renderProperty('sbts.issue.created_at.label' | trans, entity.createdAt | oro_format_datetime) }}
+                {{ UI.renderProperty('sbts.issue.updated_at.label' | trans, entity.updatedAt | oro_format_datetime) }}
+
+                {%- set reporterData -%}
+                    {%- if entity.reporter -%}
+                        {% if resource_granted('oro_user_user_view') %}
+                            <a href="{{ path('oro_user_view', {'id': entity.reporter.id}) }}">
+                                {{ entity.reporter | oro_format_name | escape }}
+                            </a>
+                        {% else %}
+                            {{ entity.reporter | oro_format_name | escape }}
+                        {% endif %}
+                    {%- endif -%}
+                {%- endset -%}
+                {{ UI.renderHtmlProperty('sbts.issue.reporter.label' | trans, reporterData) }}
+
+                {%- set assigneeData -%}
+                    {%- if entity.owner -%}
+                        {% if resource_granted('oro_user_user_view') %}
+                            <a href="{{ path('oro_user_view', {'id': entity.owner.id}) }}">
+                                {{ entity.owner | oro_format_name | escape }}
+                            </a>
+                        {% else %}
+                            {{ entity.owner | oro_format_name | escape }}
+                        {% endif %}
+                    {%- endif -%}
+                {%- endset -%}
+                {{ UI.renderHtmlProperty('sbts.issue.owner.label' | trans, assigneeData) }}
+            </div>
+            <div class="responsive-block">
+                {{ entityConfig.renderDynamicFields(entity) }}
+
+                {% if resource_granted('oro_tag_view_tag_cloud') %}
+                    {{ UI.renderHtmlProperty('oro.tag.entity_plural_label' | trans, tag.renderView(entity)) }}
+                {% endif %}
+            </div>
+        </div>
+    {%- endset -%}
+
+    {% set dataBlocks = [
+        {
+            'title': 'General Information' | trans,
+            'class': 'active',
+            'subblocks': [{
+                'data': [ issueInformation ]
+            }]
+        }
+    ] %}
+
+    {%- set collaboratorsGridBlock -%}
+        {{ dataGrid.renderGrid('collaborators-grid', {'issue_id': entity.id}) }}
+    {%- endset -%}
+
+    {% set collaboratorsBlock = [{
+        'title': 'sbts.issue.collaborator.plural_label' | trans,
+        'class': 'active',
+        'subblocks': [
+            {'data': [ collaboratorsGridBlock ] }
+        ]
+    }] %}
+
+    {% set dataBlocks = dataBlocks | merge(collaboratorsBlock) %}
+
+    {% if entity.isStory() %}
+        {% set subtasksBlock = [{
+            'title': 'sbts.issue.sub_task.plural_label' | trans,
+            'class': 'active',
+            'subblocks': [
+                {'data' : [ dataGrid.renderGrid('subtasks-grid', {'issue_id': entity.id}) ] }
+            ]
+        }] %}
+
+        {% set dataBlocks = dataBlocks | merge(subtasksBlock) %}
+    {% endif %}
+
+    {% set id = 'issueView' %}
+    {% set data = { 'dataBlocks': dataBlocks } %}
+
+    {{ parent() }}
+{% endblock content_data %}

@@ -1,0 +1,17 @@
+Sbts\Bundle\IssueBundle\Entity\Issue:
+    properties:
+        summary:
+            - Length:
+                min: 3
+                max: 255
+
+        description:
+            - Length:
+                min: 3
+                max: 255
+
+        issue_type:
+            - NotBlank: ~
+
+        issue_priority:
+            - NotBlank: ~

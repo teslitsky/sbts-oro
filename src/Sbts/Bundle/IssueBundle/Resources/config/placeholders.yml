@@ -1,0 +1,23 @@
+placeholders:
+    view_content_data_additional_information:
+        items:
+            sbts-user-issues: ~
+    view_navButtons_before:
+        items:
+            sbts_issue_link_issue_button:
+                order: 100
+    view_navButtons_after:
+        items:
+            sbts_user_create_issue_button:
+                order: 500
+
+items:
+    sbts_user_issues:
+        template: SbtsIssueBundle:Issue:userIssues.html.twig
+        applicable: @oro_ui.placeholder.filter->isInstanceOf($entity$, %oro_user.entity.class%)
+        acl: sbts_issue_view
+
+    sbts_user_create_issue_button:
+        template: SbtsIssueBundle:Issue:createIssueButton.html.twig
+        applicable: @oro_ui.placeholder.filter->isInstanceOf($entity$, %oro_user.entity.class%)
+        acl: sbts_issue_create

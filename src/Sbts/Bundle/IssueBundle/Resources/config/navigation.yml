@@ -1,0 +1,21 @@
+oro_menu_config:
+    items:
+        sbts_tab:
+            label: sbts.label
+            uri:   '#'
+        sbts_all_issues_link:
+            label: sbts.issue.entity_plural_label
+            route: sbts_issue_index
+        sbts_create_issue_link:
+            label: sbts.issue.create_entity.label
+            route: sbts_issue_create
+    tree:
+        application_menu:
+            children:
+                sbts_tab:
+                    children:
+                        sbts_all_issues_link: ~
+                        sbts_create_issue_link: ~
+
+oro_titles:
+    sbts_issue_index: sbts.issue.entity_plural_label

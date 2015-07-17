@@ -1,0 +1,64 @@
+sbts:
+    label: Sbts
+    issue:
+        entity_label: Issue
+        entity_plural_label: Issues
+        create_entity:
+            label: Create Issue
+            for_user: Create an Issue for this user
+            widget_title: Create Issue for %username%
+        create_sub_task: Create sub-task
+        owner:
+            label: Assignee
+        children:
+            label: Children
+        code:
+            label: Code
+        created_at:
+            label: Created
+        updated_at:
+            label: Updated
+        description:
+            label: Description
+        id:
+            label: Id
+        issue_priority:
+            label: Priority
+        issue_resolution:
+            label: Resolution
+        issue_type:
+            label: Type
+        parent:
+            label: Parent
+        reporter:
+            label: Reporter
+        summary:
+            label: Summary
+        status:
+            label: Status
+        collaborator:
+            label: Collaborator
+            plural_label: Collaborators
+        collaborators:
+            label: Collaborators
+        related_issue:
+            label: Related issue
+            plural_label: Related issues
+        sub_task:
+            label: Sub-task
+            plural_label: Sub-tasks
+        organization:
+            label: Organization
+        link:
+            label: Link issue
+        unlink:
+            label: Unlink issue
+        user_issues:
+            label: User Issues
+
+        controller:
+            message:
+                saved: Issue has been saved
+
+        form:
+            choose_issue: Choose issue

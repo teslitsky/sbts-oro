@@ -1,0 +1,255 @@
+datagrid:
+    issues-grid:
+        extended_entity_name: %sbts.issue.entity.class%
+        source:
+            type: orm
+            acl_resource: sbts_issue_view
+            query:
+                select:
+                    - issue.id
+                    - issue.code
+                    - issue.summary
+                    - issue.description
+                    - CONCAT(reporter.firstName, CONCAT(' ', reporter.lastName)) as reporterName
+                    - reporter.id as reporterId
+                    - CONCAT(owner.firstName, CONCAT(' ', owner.lastName)) as assigneeName
+                    - owner.id as assigneeId
+                    - issue.createdAt
+                    - issue.updatedAt
+                    - issuePriority.id as priorityId
+                    - issuePriority.name as priorityName
+                    - workflowStep.label as workflowStepLabel
+                    - issueType.id as typeId
+                    - issueType.name as typeName
+                    - issueResolution.id as resolutionId
+                    - issueResolution.name as resolutionName
+                from:
+                    - { table: %sbts.issue.entity.class%, alias: issue }
+                join:
+                    left:
+                        - { join: issue.reporter, alias: reporter }
+                        - { join: issue.owner, alias: owner }
+                        - { join: issue.issue_priority, alias: issuePriority }
+                        - { join: issue.issue_type, alias: issueType }
+                        - { join: issue.issue_resolution, alias: issueResolution }
+                        - { join: issue.workflowStep, alias: workflowStep }
+        columns:
+            code:
+                label:         sbts.issue.code.label
+            summary:
+                label:         sbts.issue.summary.label
+            type:
+                label:         sbts.issue.issue_type.label
+                type:          twig
+                frontend_type: html
+                template:      SbtsIssueBundle:Issue:Datagrid/Property/type.html.twig
+            priority:
+                label:         sbts.issue.issue_priority.label
+                type:          twig
+                frontend_type: html
+                template:      SbtsIssueBundle:Issue:Datagrid/Property/priority.html.twig
+            workflowStepLabel:
+                label:         sbts.issue.status.label
+            resolution:
+                label:         sbts.issue.issue_resolution.label
+                type:          twig
+                frontend_type: html
+                template:      SbtsIssueBundle:Issue:Datagrid/Property/resolution.html.twig
+            reporterName:
+                type:          twig
+                label:         sbts.issue.reporter.label
+                frontend_type: html
+                template:      SbtsIssueBundle:Issue:Datagrid/Property/reporter.html.twig
+            assigneeName:
+                type:          twig
+                label:         sbts.issue.owner.label
+                frontend_type: html
+                template:      SbtsIssueBundle:Issue:Datagrid/Property/assignee.html.twig
+            createdAt:
+                label:         oro.ui.created_at
+                frontend_type: datetime
+            updatedAt:
+                label:         oro.ui.updated_at
+                frontend_type: datetime
+        sorters:
+            columns:
+                code:
+                    data_name: issue.code
+                summary:
+                    data_name: issue.summary
+                type:
+                    data_name: typeName
+                priority:
+                    data_name: priorityName
+                workflowStepLabel:
+                    data_name: workflowStep.stepOrder
+                resolution:
+                    data_name: resolutionName
+                reporterName:
+                    data_name: reporterName
+                assigneeName:
+                    data_name: assigneeName
+                createdAt:
+                    data_name: issue.createdAt
+                updatedAt:
+                    data_name: issue.updatedAt
+            default:
+                updatedAt: DESC
+        filters:
+            columns:
+                code:
+                    type:      string
+                    data_name: issue.code
+                summary:
+                    type:      string
+                    data_name: issue.summary
+                type:
+                    type:      enum
+                    data_name: typeId
+                    enum_code: issue_type
+                priority:
+                    type:      enum
+                    data_name: priorityId
+                    enum_code: issue_priority
+                workflowStepLabel:
+                    type:      entity
+                    data_name: issue.workflowStep
+                    options:
+                        field_type: oro_workflow_step_select
+                        field_options:
+                            workflow_entity_class: %sbts.issue.entity.class%
+                resolution:
+                    type:      enum
+                    data_name: resolutionId
+                    enum_code: issue_resolution
+                reporterName:
+                    type:      string
+                    data_name: reporterName
+                assigneeName:
+                    type:      string
+                    data_name: assigneeName
+                createdAt:
+                    type:      datetime
+                    data_name: issue.createdAt
+                updatedAt:
+                    type:      datetime
+                    data_name: issue.updatedAt
+        options:
+            entity_pagination: true
+        properties:
+            id: ~
+            view_link:
+                type:   url
+                route:  sbts_issue_view
+                params: [ id ]
+            update_link:
+                type:   url
+                route:  sbts_issue_update
+                params: [ id ]
+            delete_link:
+                type:   url
+                route:  sbts_api_delete_issue
+                params: [ id ]
+        actions:
+            view:
+                type:          navigate
+                acl_resource:  sbts_issue_view
+                label:         oro.grid.action.view
+                icon:          eye-open
+                link:          view_link
+                rowAction:     true
+            update:
+                type:          navigate
+                acl_resource:  sbts_issue_update
+                label:         oro.grid.action.view
+                icon:          edit
+                link:          update_link
+                rowAction:     true
+            delete:
+                type:          delete
+                acl_resource:  sbts_issue_delete
+                label:         oro.grid.action.delete
+                icon:          trash
+                link:          delete_link
+                rowAction:     true
+
+    subtasks-grid:
+        extends: issues-grid
+        source:
+            query:
+                where:
+                    and:
+                        - issue.parent = :issue_id
+            bind_parameters:
+                - issue_id
+        columns:
+            typeLabel:
+                renderable: false
+        filters:
+            columns:
+                typeLabel:
+                    type:      enum
+                    data_name: typeId
+                    enum_code: issue_type
+                    enabled: false
+
+    collaborators-grid:
+        source:
+            type: orm
+            acl_resource: sbts_issue_view
+            query:
+                select:
+                    - collaborator.id
+                    - CONCAT(collaborator.firstName, CONCAT(' ', collaborator.lastName)) as collaboratorName
+                from:
+                    - { table: %sbts.issue.entity.class%, alias: issue }
+                join:
+                    inner:
+                        - { join: issue.collaborators , alias: collaborator }
+                where:
+                    and:
+                        - issue.id = :issue_id
+            bind_parameters:
+                - issue_id
+        columns:
+            collaboratorName:
+                label: sbts.issue.collaborator.label
+        sorters:
+            columns:
+                collaboratorName:
+                    data_name: collaboratorName
+            default:
+                collaboratorName: ASC
+        filters: ~
+        properties:
+            id: ~
+            view_link:
+                type:          url
+                route:         oro_user_view
+                params:        [ id ]
+        actions:
+            view:
+                type:          navigate
+                acl_resource:  oro_user_user_view
+                label:         oro.grid.action.view
+                icon:          eye-open
+                link:          view_link
+                rowAction:     true
+
+    user-issues-grid:
+        extends: issues-grid
+        source:
+            query:
+                where:
+                    or:
+                        - issue.owner = :userId
+                        - issue.reporter = :userId
+            bind_parameters:
+                - userId
+        filters: ~
+        options:
+            toolbarOptions:
+                hide: true
+                pageSize:
+                    items: [10]
+                    default_per_page: 10
