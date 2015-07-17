@@ -8,6 +8,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\EntityExtendBundle\Tools\ExtendHelper;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use Oro\Bundle\OrganizationBundle\Entity\OrganizationInterface;
+use Oro\Bundle\UserBundle\Entity\UserInterface;
 use Oro\Bundle\WorkflowBundle\Model\WorkflowManager;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -21,6 +23,11 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
      * @var WorkflowManager
      */
     protected $workflowManager;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
 
     /**
      * @var array
@@ -99,6 +106,7 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
     public function setContainer(ContainerInterface $container = null)
     {
         $this->workflowManager = $container->get('oro_workflow.manager');
+        $this->em = $container->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -106,14 +114,8 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
      */
     public function load(ObjectManager $manager)
     {
-        $issueTypeRepositoryClass = ExtendHelper::buildEnumValueClassName('issue_type');
-        $issueTypeStory = $manager
-            ->getRepository($issueTypeRepositoryClass)
-            ->find(Issue::TYPE_STORY);
-
-        $issueTypeSubTask = $manager
-            ->getRepository($issueTypeRepositoryClass)
-            ->findOneBy(Issue::TYPE_SUB_TASK);
+        $issueTypeRepoClass = ExtendHelper::buildEnumValueClassName('issue_type');
+        $issuePriorityRepoClass = ExtendHelper::buildEnumValueClassName('issue_priority');
 
         $organization = $manager->getRepository('OroOrganizationBundle:Organization')->getFirst();
         $reporter = $manager
@@ -124,31 +126,31 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
             ->getRepository('OroUserBundle:User')
             ->findOneBy(['username' => 'manager']);
 
-        if (!$issueTypeStory || !$issueTypeSubTask || !$organization || !$reporter || !$owner) {
+        if (!$organization || !$reporter || !$owner) {
             return;
         }
 
         foreach ($this->issues as $issue) {
             $entity = new Issue();
-            $entity = $this->fillEntity($entity, $issue);
+            $entity = $this->fillEntity($entity, $issue, $reporter, $owner, $organization);
             $entity
-                ->setReporter($reporter)
-                ->setOwner($owner)
-                ->setOrganization($organization)
-                ->addCollaborator($reporter)
-                ->addCollaborator($owner);
+                ->setIssueType($manager->getRepository($issueTypeRepoClass)->find($issue['type']))
+                ->setIssuePriority($manager->getRepository($issuePriorityRepoClass)->find($issue['priority']));
+
+            $manager->persist($entity);
+            $manager->flush();
+
+            $this->setupIssueStatus($entity);
+            $manager->flush();
 
             if (isset($issue['subtasks'])) {
                 foreach ($issue['subtasks'] as $data) {
                     $subTask = new Issue();
-                    $subTask = $this->fillEntity($subTask, $data);
+                    $subTask = $this->fillEntity($subTask, $data, $reporter, $owner, $organization);
                     $subTask->setParent($entity);
                     $subTask
-                        ->setReporter($reporter)
-                        ->setOwner($owner)
-                        ->setOrganization($organization)
-                        ->addCollaborator($reporter)
-                        ->addCollaborator($owner);
+                        ->setIssueType($manager->getRepository($issueTypeRepoClass)->find($data['type']))
+                        ->setIssuePriority($manager->getRepository($issuePriorityRepoClass)->find($data['priority']));
 
                     $manager->persist($subTask);
                     $manager->flush();
@@ -158,30 +160,35 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
                 }
 
             }
-
-            $manager->persist($entity);
-            $manager->flush();
-
-            $this->setupIssueStatus($entity);
-            $manager->flush();
         }
     }
 
     /**
-     * @param Issue $entity
-     * @param array $data
+     * @param Issue                 $entity
+     * @param array                 $data
+     * @param UserInterface         $reporter
+     * @param UserInterface         $owner
+     * @param OrganizationInterface $organization
      *
      * @return Issue
      */
-    protected function fillEntity(Issue $entity, $data)
-    {
+    protected function fillEntity(
+        Issue $entity,
+        $data,
+        UserInterface $reporter,
+        UserInterface $owner,
+        OrganizationInterface $organization
+    ) {
         $entity
             ->setSummary($data['summary'])
             ->setDescription($data['description'])
-            ->setIssueType($data['type'])
-            ->setIssuePriority($data['priority'])
             ->setCreatedAt($this->getRandomDate())
-            ->setUpdatedAt($this->getRandomDate());
+            ->setUpdatedAt($this->getRandomDate())
+            ->setReporter($reporter)
+            ->setOwner($owner)
+            ->setOrganization($organization)
+            ->addCollaborator($reporter)
+            ->addCollaborator($owner);
 
         return $entity;
     }
@@ -199,7 +206,10 @@ class LoadIssueEntityData extends AbstractFixture implements DependentFixtureInt
             $stepName = $workflowItem->getCurrentStep()->getName();
 
             if (in_array($stepName, ['resolved', 'closed'])) {
-                $issue->setIssueResolution(Issue::RESOLUTION_FIXED);
+                $issueResolutionRepoClass = ExtendHelper::buildEnumValueClassName('issue_resolution');
+                $issue->setIssueResolution(
+                    $this->em->getRepository($issueResolutionRepoClass)->find($this->getRandomResolution())
+                );
             }
         }
     }
