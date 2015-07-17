@@ -84,7 +84,11 @@ class IssueController extends RestController implements ClassResourceInterface
         ];
 
         $map = array_fill_keys(['ownerId', 'ownerUsername'], 'owner');
-        $criteria = $this->getFilterCriteria($this->getSupportedQueryParameters('cgetAction'), $filterParameters, $map);
+        $criteria = $this->getFilterCriteria(
+            $this->getSupportedQueryParameters('cgetAction'),
+            $filterParameters,
+            $map
+        );
 
         return $this->handleGetListRequest($page, $limit, $criteria);
     }
@@ -230,7 +234,7 @@ class IssueController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function fixFormData(array &$data, $entity)
     {
