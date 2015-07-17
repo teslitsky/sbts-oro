@@ -15,6 +15,3 @@ Sbts\Bundle\IssueBundle\Entity\Issue:
 
         issue_priority:
             - NotBlank: ~
-
-        issue_resolution:
-            - NotBlank: ~

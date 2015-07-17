@@ -53,17 +53,6 @@ class IssueType extends AbstractType
                 ]
             )
             ->add(
-                'issue_resolution',
-                'oro_enum_select',
-                [
-                    'label'     => 'sbts.issue.issue_resolution.label',
-                    'enum_code' => 'issue_resolution',
-                    'configs'   => [
-                        'allowClear' => false,
-                    ]
-                ]
-            )
-            ->add(
                 'reporter',
                 'oro_user_select',
                 [
