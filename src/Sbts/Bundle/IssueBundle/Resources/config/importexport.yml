@@ -31,7 +31,7 @@ services:
     sbts.importexport.processor.export:
         parent: oro_importexport.processor.export_abstract
         calls:
-            - [setDataConverter, [@sbts.importexport.data_converter.issue]]
+            - [setDataConverter, [@sbts.importexport.data_converter]]
         tags:
             - { name: oro_importexport.processor, type: export, entity: %sbts.issue.entity.class%, alias: sbts }
 
